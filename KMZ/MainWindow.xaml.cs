@@ -299,7 +299,21 @@ namespace KMZ
 
         private void OnLoadAllFilesClick(object sender, RoutedEventArgs e)
         {
+            DirectoryInfo di = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Kmz\data\");
+            FileInfo[] files = di.GetFiles("*.kml");
+            foreach(FileInfo file in files)
+            {
+                KmlFile kmlFile;
+                try
+                {
+                    kmlFile = KmlFile.Load(file.Open(FileMode.Open));
+                    AddToList(kmlFile);
+                }
+                catch
+                {
 
+                }
+            }
         }
     }
 }
