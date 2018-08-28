@@ -1,0 +1,20 @@
+﻿<Window x:Class="KMZ.Pages.NewName"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:KMZ.Pages"
+        mc:Ignorable="d"
+        Title="NewName" Height="400" Width="600">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Margin="40" Grid.Row="0" Text="Podaj nową nazwę:" TextAlignment="Center" FontSize="30" />
+        <TextBox x:Name="NewNameBox" Margin="40" Grid.Row="1" TextAlignment="Center" FontSize="30" />
+        <Button x:Name="ConfirmNameButton" Content="Confirm" Grid.Row="2" Margin="40" Width="150" Click="OnConfirmButtonClick"/>
+    </Grid>
+</Window>

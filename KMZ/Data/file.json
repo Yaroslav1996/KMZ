@@ -1,0 +1,72 @@
+﻿{
+  "?xml": {
+    "@version": "1.0",
+    "@encoding": "utf-8"
+  },
+  "kml": {
+    "@xmlns:gx": "http://www.google.com/kml/ext/2.2",
+    "@xmlns:kml": "http://www.opengis.net/kml/2.2",
+    "@xmlns:atom": "http://www.w3.org/2005/Atom",
+    "@xmlns": "http://www.opengis.net/kml/2.2",
+    "Document": {
+      "name": "KML2.kml",
+      "StyleMap": {
+        "@id": "msn_ylw-pushpin1",
+        "Pair": [
+          {
+            "key": "normal",
+            "styleUrl": "#sn_ylw-pushpin1"
+          },
+          {
+            "key": "highlight",
+            "styleUrl": "#sh_ylw-pushpin1"
+          }
+        ]
+      },
+      "Style": [
+        {
+          "@id": "sn_ylw-pushpin1",
+          "IconStyle": {
+            "scale": "1.1000000000000001",
+            "Icon": { "href": "http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png" },
+            "hotSpot": {
+              "@x": "20",
+              "@xunits": "pixels",
+              "@y": "2",
+              "@yunits": "pixels"
+            }
+          },
+          "LineStyle": {
+            "color": "ff0000ff",
+            "width": "10"
+          }
+        },
+        {
+          "@id": "sh_ylw-pushpin1",
+          "IconStyle": {
+            "scale": "1.3",
+            "Icon": { "href": "http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png" },
+            "hotSpot": {
+              "@x": "20",
+              "@xunits": "pixels",
+              "@y": "2",
+              "@yunits": "pixels"
+            }
+          },
+          "LineStyle": {
+            "color": "ff0000ff",
+            "width": "10"
+          }
+        }
+      ],
+      "Placemark": {
+        "name": "KML2",
+        "styleUrl": "#msn_ylw-pushpin1",
+        "LineString": {
+          "tessellate": "true",
+          "coordinates": "20.2699492565228,49.904096842340202,0\r\n21.29219506558422,50.016427459431831,0\r\n20.2819667865353,50.197466778082692,0\r\n21.276419022269259,50.297800901136469,0"
+        }
+      }
+    }
+  }
+}
