@@ -29,6 +29,7 @@
             <Button x:Name="ShowButton" Content="Show file" Margin="10,0" Width="80" IsEnabled="False" Click="OnShowButtonClick" />
             <Button x:Name="ChangeName" Content="Change name" Margin="10,0" Width="80" IsEnabled="False" Click="OnNewNameButtonClick" />
             <Button x:Name="EditButton" Content="Edit file" Margin="10,0" Width="80" IsEnabled="False" Click="OnEditButtonClick" />
+            <Button x:Name="DeleteButton" Content="Delete file" Margin="10,0" Width="80" IsEnabled="False" Click="OnDeleteButtonClick" />
             <Button x:Name="ClearButton" Content="Clear files" Click="OnClearButtonClick" Margin="10,0" Width="80" />
         </StackPanel>
     </Grid>

@@ -1,0 +1,22 @@
+﻿<Window x:Class="KMZ.Pages.NewFileWindow"
+        x:Name="NewFileWindowXD"
+        Closed="NewFileWindow_Closed"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:KMZ.Pages"
+        mc:Ignorable="d"
+        Title="NewFileWindow" Height="450" Width="800">
+    <Grid>
+        <ScrollViewer>
+            <StackPanel>
+                <StackPanel x:Name="Stack">
+
+                </StackPanel>
+                <Button x:Name="NewPointButton" Height="100" Content="New point" FontSize="30" Click="OnNewPointButton_Click" Margin="0,40"/>
+                <Button x:Name="Close" Height="100" Content="Close" FontSize="30" Click="OnClose_Click"  Margin="0,40"/>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

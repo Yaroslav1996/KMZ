@@ -64,7 +64,7 @@ namespace KMZ
             }
         }
 
-        private void AddToList(KmlFile file)
+        public void AddToList(KmlFile file)
         {
             KMLButton newButt = new KMLButton(file)
             {
@@ -159,9 +159,20 @@ namespace KMZ
             }
         }
 
+        private void ChangeButtons(bool to)
+        {
+            this.ShowButton.IsEnabled = to;
+            this.EditButton.IsEnabled = to;
+            this.ChangeName.IsEnabled = to;
+            this.DeleteButton.IsEnabled = to;
+        }
+
         private void OnManualClick(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Not aviable yet");
+            List<SharpKml.Base.Vector> coorList = new List<SharpKml.Base.Vector>();
+            NewFileWindow newFileWindow = new NewFileWindow(this);
+            newFileWindow.Show();
+            this.IsEnabled = false;
         }
 
         private void OnLoadFileClick(object sender, RoutedEventArgs e)
@@ -201,10 +212,11 @@ namespace KMZ
         private void OnClearButtonClick(object sender, RoutedEventArgs e)
         {
             if (MessageBox.Show("Na pewno wyczyścić listę plików?", "Question", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
                 Stack.Children.Clear();
-
-            this.ShowButton.IsEnabled = false;
-            this.EditButton.IsEnabled = false;
+                KMLCollection.Clear();
+            }
+            ChangeButtons(false);
         }
 
         private void OnFileButtonClick(object sender, RoutedEventArgs e)
@@ -214,9 +226,7 @@ namespace KMZ
             if (!butt.IsClicked)
             {
                 butt.IsClicked = true;
-                this.ShowButton.IsEnabled = true;
-                this.EditButton.IsEnabled = true;
-                this.ChangeName.IsEnabled = true;
+                ChangeButtons(true);
                 butt.Background = new SolidColorBrush(Colors.DarkGray);
                 ChosenFile = butt.File;
 
@@ -240,9 +250,7 @@ namespace KMZ
             else if (butt.IsClicked)
             {
                 butt.IsClicked = false;
-                this.ShowButton.IsEnabled = false;
-                this.EditButton.IsEnabled = false;
-                this.ChangeName.IsEnabled = false;
+                ChangeButtons(false);
                 butt.Background = new SolidColorBrush(Colors.LightGray);
                 ChosenFile = null;
 
@@ -313,6 +321,23 @@ namespace KMZ
                 {
 
                 }
+            }
+        }
+
+        private void OnDeleteButtonClick(object sender, RoutedEventArgs e)
+        {
+            KMLCollection.Remove(ChosenFile);
+            foreach(KMLButton i in Stack.Children)
+            {
+                if (i.IsClicked)
+                {
+                    Stack.Children.Remove(i);
+                    break;
+                }
+            }
+            foreach(KMLButton i in Stack.Children)
+            {
+                i.IsEnabled = true;
             }
         }
     }
