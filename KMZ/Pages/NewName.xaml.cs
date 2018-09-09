@@ -35,7 +35,15 @@ namespace KMZ.Pages
             foreach(KMLButton i in wind.Stack.Children)
             {
                 if (i.IsClicked)
-                    i.Content = this.NewNameBox.Text;
+                {
+                    if (this.NewNameBox.Text.Contains(".kml"))
+                        i.Content = this.NewNameBox.Text;
+
+                    else
+                    {
+                        i.Content = this.NewNameBox.Text + ".kml";
+                    }
+                }
             }
             this.Close();
         }

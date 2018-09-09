@@ -11,6 +11,7 @@
     <Grid>
         <ScrollViewer>
             <StackPanel>
+                <TextBox x:Name="NewFileName" Height="100" Margin="40" TextAlignment="Center" FontSize="40" Text="Enter file name" Padding="15"/>
                 <StackPanel x:Name="Stack">
 
                 </StackPanel>

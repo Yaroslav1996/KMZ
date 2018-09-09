@@ -80,6 +80,10 @@ namespace KMZ
         {
             Map map = new Map(file);
             map.MapBrowser.Source = new Uri(@"C:\Users\Yaroslav\Documents\Visual Studio 2017\Projects\KMZ\KMZ\Pages\MapPage.html");
+
+            List<Placemark> lines = new List<Placemark>();
+            ExtractPlacemarks(((Kml)file.Root).Feature, lines);
+
             return map;
         }
 
@@ -292,6 +296,7 @@ namespace KMZ
                 {
                     FileStream str = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Kmz\data\" + ((Kml)i.Root).Feature.Name, FileMode.OpenOrCreate);
                     i.Save(str);
+                    MessageBox.Show("File saved");
                 }
                 catch(Exception ex)
                 {
@@ -300,7 +305,10 @@ namespace KMZ
                         Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Kmz\data\");
                         FileStream str = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Kmz\data\" + ((Kml)i.Root).Feature.Name, FileMode.OpenOrCreate);
                         i.Save(str);
+                        MessageBox.Show("File saved");
                     }
+                    else
+                        MessageBox.Show("Save failed");
                 }
             }
         }

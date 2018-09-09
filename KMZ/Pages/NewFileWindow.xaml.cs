@@ -27,6 +27,8 @@ namespace KMZ.Pages
         {
             InitializeComponent();
             CurrentPointNumber = 0;
+            NewFileName.Focus();
+            NewFileName.SelectAll();
             main = mainWindow;
             CoordsList = new List<SharpKml.Base.Vector>();
             Fajel = new Kml();
@@ -51,10 +53,10 @@ namespace KMZ.Pages
             LineString line = new LineString();
             line.Coordinates = new CoordinateCollection(CoordsList);
             Placemark placemark = new Placemark();
-            placemark.Name = "DUPA.kml";
+            placemark.Name = this.NewFileName.Text + ".kml";
             placemark.Geometry = line;
             Fajel.Feature = placemark;
-            ;
+           
             main.AddToList(KmlFile.Create(Fajel, true));
 
             main.IsEnabled = true;

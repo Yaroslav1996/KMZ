@@ -38,10 +38,25 @@ namespace KMZ.Controls
 
         private void OnConfirmButton_Click(object sender, RoutedEventArgs e)
         {
-            Coordinates.Latitude = Double.Parse(NewLat.Text);
-            CurrLat.Text = Coordinates.Latitude.ToString();
-            Coordinates.Longitude = Double.Parse(NewLong.Text);
-            CurrLong.Text = Coordinates.Longitude.ToString();
+            try
+            {
+                Coordinates.Latitude = Double.Parse(NewLat.Text);
+                CurrLat.Text = Coordinates.Latitude.ToString();
+            }
+            catch
+            {
+
+            }
+
+            try
+            {
+                Coordinates.Longitude = Double.Parse(NewLong.Text);
+                CurrLong.Text = Coordinates.Longitude.ToString();
+            }
+            catch
+            {
+
+            }
         }
 
         private void NumberValidation(object sender, TextCompositionEventArgs e)
