@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using KMZ.Classes;
+using SharpKml.Engine;
 
 namespace KMZ.Pages
 {
@@ -32,7 +33,7 @@ namespace KMZ.Pages
         private void OnConfirmButtonClick(object sender, RoutedEventArgs e)
         {
             ((Kml)wind.ChosenFile.Root).Feature.Name = this.NewNameBox.Text;
-            foreach(KMLButton i in wind.Stack.Children)
+            foreach(FileButton<KmlFile> i in wind.Stack.Children)
             {
                 if (i.IsClicked)
                 {
