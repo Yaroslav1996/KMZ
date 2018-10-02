@@ -1,16 +1,16 @@
 ﻿using KMZ.Classes;
-using KMZ.Pages;
 using KMZ.Controls;
+using KMZ.Pages;
 using Microsoft.Win32;
 using SharpKml.Dom;
 using SharpKml.Engine;
-using SharpKml.Base;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Windows;
-using System.Windows.Media;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Xml.Serialization;
 
 namespace KMZ
@@ -27,7 +27,8 @@ namespace KMZ
             LoadSettings();
         }
 
-        public List<KmlFile> KMLCollection { get; set; }
+        public List<KmlFile> KMLCollection { get; }
+        public List<Section> SectionCollection { get; }
         public KmlFile ChosenFile;
         public Settings Setts;
 
@@ -66,7 +67,7 @@ namespace KMZ
 
         public void AddToList(KmlFile file)
         {
-            KMLButton newButt = new KMLButton(file)
+            FileButton<KmlFile> newButt = new FileButton<KmlFile>(file)
             {
                 Margin = new Thickness(10, 5, 10, 5),
                 Content = ((Kml)file.Root).Feature.Name.ToString()
@@ -76,16 +77,37 @@ namespace KMZ
             KMLCollection.Add(file);
         }
 
-        private Map CreateMap(KmlFile file)
+        public void AddToList(Section file)
         {
-            Map map = new Map(file);
-            map.MapBrowser.Source = new Uri(@"C:\Users\Yaroslav\Documents\Visual Studio 2017\Projects\KMZ\KMZ\Pages\MapPage.html");
-
-            List<Placemark> lines = new List<Placemark>();
-            ExtractPlacemarks(((Kml)file.Root).Feature, lines);
-
-            return map;
+            FileButton<Section> newButt = new FileButton<Section>(file)
+            {
+                Margin = new Thickness(10, 5, 5, 10),
+                Content = file.Name
+            };
+            newButt.Click += OnSectionFileClick;
+            SectionStack.Children.Add(newButt);
+            SectionCollection.Add(file);
         }
+
+        private void OnSectionFileClick(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        //private Map CreateMap(KmlFile file)
+        //{
+        //    Map map = new Map(file);
+        //    string path = @"pack://application:,,,/Pages";
+        //    Uri urur = new Uri(path);
+        //    //DirectoryInfo dir = new DirectoryInfo(urur.);
+        //    MessageBox.Show(urur.Normalize().GetPath());
+        //    //map.MapBrowser.Source = new Uri(urur.AbsolutePath);
+
+        //    List<Placemark> lines = new List<Placemark>();
+        //    ExtractPlacemarks(((Kml)file.Root).Feature, lines);
+
+        //    return map;
+        //}
 
         private void EditFile()
         {
@@ -95,12 +117,11 @@ namespace KMZ
                 outputFile = KmlFile.Create(ChosenFile.Root.Clone(), true);
                 ((Kml)outputFile.Root).Feature.Name = ((Kml)outputFile.Root).Feature.Name.Replace(".kml", "(Copy).kml");
                 AddToList(outputFile);
-                KMLButton butt = Stack.Children[Stack.Children.Count - 1] as KMLButton;
+                FileButton<KmlFile> butt = Stack.Children[Stack.Children.Count - 1] as FileButton<KmlFile>;
                 butt.IsEnabled = false;
             }
             else if (Setts.SpareCopy == Setting.No)
             {
-                
             }
             else
             {
@@ -109,7 +130,7 @@ namespace KMZ
                     outputFile = KmlFile.Create(ChosenFile.Root.Clone(), true);
                     ((Kml)outputFile.Root).Feature.Name = ((Kml)outputFile.Root).Feature.Name.Replace(".kml", "(Copy).kml");
                     AddToList(outputFile);
-                    KMLButton butt = Stack.Children[Stack.Children.Count - 1] as KMLButton;
+                    FileButton<KmlFile> butt = Stack.Children[Stack.Children.Count - 1] as FileButton<KmlFile>;
                     butt.IsEnabled = false;
                 }
             }
@@ -117,14 +138,13 @@ namespace KMZ
             Kml kml = ChosenFile.Root as Kml;
             List<Placemark> placemarks = new List<Placemark>();
             ExtractPlacemarks(kml.Feature, placemarks);
-            foreach(var place in placemarks)
+            foreach (var place in placemarks)
             {
-                TextBox placeBox = new TextBox();
+                TextBlock placeBox = new TextBlock();
                 placeBox.TextAlignment = TextAlignment.Center;
                 placeBox.Text = place.Name;
                 placeBox.Height = 50;
                 placeBox.FontSize = 30;
-                placeBox.BorderThickness = new Thickness(5);
                 editWindow.Stack.Children.Add(placeBox);
                 int iter = 0;
                 foreach (var i in ((LineString)place.Geometry).Coordinates)
@@ -136,12 +156,12 @@ namespace KMZ
             editWindow.Show();
         }
 
-        private void ShowFile(KmlFile inputFile)
-        {
-            Map MapWindow = CreateMap(inputFile);
+        //private void ShowFile(KmlFile inputFile)
+        //{
+        //    Map MapWindow = CreateMap(inputFile);
 
-            MapWindow.Show();
-        }
+        //    MapWindow.Show();
+        //}
 
         public static void ExtractPlacemarks(Feature feat, List<Placemark> placemarks)
         {
@@ -153,9 +173,9 @@ namespace KMZ
             else
             {
                 Container cont = feat as Container;
-                if(cont != null)
+                if (cont != null)
                 {
-                    foreach(var i in cont.Features)
+                    foreach (var i in cont.Features)
                     {
                         ExtractPlacemarks(i, placemarks);
                     }
@@ -165,7 +185,7 @@ namespace KMZ
 
         private void ChangeButtons(bool to)
         {
-            this.ShowButton.IsEnabled = to;
+            //this.ShowButton.IsEnabled = to;
             this.EditButton.IsEnabled = to;
             this.ChangeName.IsEnabled = to;
             this.DeleteButton.IsEnabled = to;
@@ -201,7 +221,35 @@ namespace KMZ
                     str.Dispose();
                 }
             }
-            catch (Exception)
+            catch
+            {
+                return;
+            }
+        }
+
+        private void OnLoadSectionClick(object sender, RoutedEventArgs e)
+        {
+            Stream str = null;
+            OpenFileDialog LoadWindow = new OpenFileDialog()
+            {
+                InitialDirectory = "c:\\Pulpit",
+                Filter = "All files (*.*)|*.*|JPG (*.jpg)|*.jpg",
+                FilterIndex = 2,
+                RestoreDirectory = true
+            };
+
+            try
+            {
+                LoadWindow.ShowDialog();
+                str = LoadWindow.OpenFile();
+                if (str != null)
+                {
+                    System.Drawing.Image img = Bitmap.FromStream(str);
+                    
+
+                }
+            }
+            catch
             {
                 return;
             }
@@ -225,7 +273,7 @@ namespace KMZ
 
         private void OnFileButtonClick(object sender, RoutedEventArgs e)
         {
-            KMLButton butt = sender as KMLButton;
+            FileButton<KmlFile> butt = sender as FileButton<KmlFile>;
 
             if (!butt.IsClicked)
             {
@@ -234,7 +282,7 @@ namespace KMZ
                 butt.Background = new SolidColorBrush(Colors.DarkGray);
                 ChosenFile = butt.File;
 
-                foreach (KMLButton i in Stack.Children)
+                foreach (FileButton<KmlFile> i in Stack.Children)
                 {
                     if (!i.IsClicked)
                         i.IsEnabled = false;
@@ -243,7 +291,7 @@ namespace KMZ
                 {
                     ChosenFile.Save(new FileStream("Actual.kml", FileMode.Open));
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     if (ex.GetType().IsEquivalentTo(typeof(FileNotFoundException)))
                     {
@@ -258,24 +306,24 @@ namespace KMZ
                 butt.Background = new SolidColorBrush(Colors.LightGray);
                 ChosenFile = null;
 
-                foreach (KMLButton i in Stack.Children)
+                foreach (FileButton<KmlFile> i in Stack.Children)
                 {
                     i.IsEnabled = true;
                 }
             }
         }
 
-        private void OnShowButtonClick(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                ShowFile(ChosenFile);
-            }
-            catch(Exception ex)
-            {
-                
-            }
-        }
+        //private void OnShowButtonClick(object sender, RoutedEventArgs e)
+        //{
+        //    ShowFile(ChosenFile);
+        //    //try
+        //    //{
+        //    //    ShowFile(ChosenFile);
+        //    //}
+        //    //catch (Exception ex)
+        //    //{
+        //    //}
+        //}
 
         private void OnEditButtonClick(object sender, RoutedEventArgs e)
         {
@@ -290,7 +338,7 @@ namespace KMZ
 
         private void OnSaveButtonClick(object sender, RoutedEventArgs e)
         {
-            foreach(KmlFile i in KMLCollection)
+            foreach (KmlFile i in KMLCollection)
             {
                 try
                 {
@@ -298,7 +346,7 @@ namespace KMZ
                     i.Save(str);
                     MessageBox.Show("File saved");
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     if (ex.GetType().IsEquivalentTo(typeof(FileNotFoundException)))
                     {
@@ -317,7 +365,7 @@ namespace KMZ
         {
             DirectoryInfo di = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Kmz\data\");
             FileInfo[] files = di.GetFiles("*.kml");
-            foreach(FileInfo file in files)
+            foreach (FileInfo file in files)
             {
                 KmlFile kmlFile;
                 try
@@ -327,7 +375,6 @@ namespace KMZ
                 }
                 catch
                 {
-
                 }
             }
         }
@@ -335,7 +382,7 @@ namespace KMZ
         private void OnDeleteButtonClick(object sender, RoutedEventArgs e)
         {
             KMLCollection.Remove(ChosenFile);
-            foreach(KMLButton i in Stack.Children)
+            foreach (FileButton<KmlFile>i in Stack.Children)
             {
                 if (i.IsClicked)
                 {
@@ -343,7 +390,7 @@ namespace KMZ
                     break;
                 }
             }
-            foreach(KMLButton i in Stack.Children)
+            foreach (FileButton<KmlFile>i in Stack.Children)
             {
                 i.IsEnabled = true;
             }

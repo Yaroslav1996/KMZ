@@ -164,7 +164,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Classes\KMLButton.cs" />
+    <Compile Include="Classes\FileButton.cs" />
+    <Compile Include="Classes\Section.cs" />
     <Compile Include="Classes\Settings.cs" />
     <Compile Include="Controls\EditPointControl.xaml.cs">
       <DependentUpon>EditPointControl.xaml</DependentUpon>
@@ -189,6 +190,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\NewSectionName.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\SettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -206,6 +211,9 @@
     </Compile>
     <Compile Include="Pages\NewName.xaml.cs">
       <DependentUpon>NewName.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\NewSectionName.xaml.cs">
+      <DependentUpon>NewSectionName.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
