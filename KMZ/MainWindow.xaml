@@ -13,8 +13,8 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Button x:Name="SettingsButton" Grid.Row="1" Height="30" Width="30"  VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="10" Click="OnSettingsButtonClick">
             <Image Source="Data/img/settings.png"></Image>
@@ -24,9 +24,12 @@
             <Button Height="50" Margin="20" Content="Insert Manually" Click="OnManualClick" />
             <Button Height="50" Margin="20" Content="Load Section" Click="OnLoadSectionClick" />
         </StackPanel>
-        <StackPanel Grid.Column="0" Grid.Row="1" Margin="30" x:Name="SectionStack">
-            
-        </StackPanel>
+        <Border Grid.Column="0" Grid.Row="1" BorderThickness="2" BorderBrush="Black">
+            <StackPanel  Margin="30" x:Name="SectionStack">
+                <TextBlock Text="Sections" Margin="30" Height="40" TextAlignment="Center" FontSize="30" FontWeight="Bold" />
+            </StackPanel>
+        </Border>
+
         <ScrollViewer Grid.Column="1" Margin="10,30,10,40">
             <StackPanel x:Name="Stack">
             </StackPanel>

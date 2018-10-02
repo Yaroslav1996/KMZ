@@ -245,7 +245,11 @@ namespace KMZ
                 if (str != null)
                 {
                     System.Drawing.Image img = Bitmap.FromStream(str);
-                    
+                    StringPackage pac = new StringPackage("");
+                    NewName newName = new NewName(pac);
+                    newName.ShowDialog();
+                    Section sec = new Section(pac.Content, img);
+                    AddToList(sec);
 
                 }
             }
@@ -332,8 +336,24 @@ namespace KMZ
 
         private void OnNewNameButtonClick(object sender, RoutedEventArgs e)
         {
-            NewName newName = new NewName(this);
-            newName.Show();
+            StringPackage pac = new StringPackage("");
+            NewName newName = new NewName(pac);
+            newName.ShowDialog();
+            string na = pac.Content;
+
+            if (!na.Contains(".kml"))
+                na += ".kml";
+            
+            foreach (FileButton<KmlFile> i in Stack.Children)
+            {
+                if (i.IsClicked)
+                {
+                    i.Content = na;
+                    break;
+                }
+            }
+
+            ((Kml)ChosenFile.Root).Feature.Name = na;
         }
 
         private void OnSaveButtonClick(object sender, RoutedEventArgs e)

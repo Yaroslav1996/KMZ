@@ -22,30 +22,18 @@ namespace KMZ.Pages
     /// </summary>
     public partial class NewName : Window
     {
-        public NewName(MainWindow window)
+        public NewName(StringPackage p)
         {
             InitializeComponent();
-            wind = window;
+            Namee = p;
         }
 
-        MainWindow wind;
+        StringPackage Namee;
 
         private void OnConfirmButtonClick(object sender, RoutedEventArgs e)
         {
-            ((Kml)wind.ChosenFile.Root).Feature.Name = this.NewNameBox.Text;
-            foreach(FileButton<KmlFile> i in wind.Stack.Children)
-            {
-                if (i.IsClicked)
-                {
-                    if (this.NewNameBox.Text.Contains(".kml"))
-                        i.Content = this.NewNameBox.Text;
-
-                    else
-                    {
-                        i.Content = this.NewNameBox.Text + ".kml";
-                    }
-                }
-            }
+            Namee.Content = NewNameBox.Text;
+            
             this.Close();
         }
     }
