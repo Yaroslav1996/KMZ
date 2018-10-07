@@ -60,12 +60,12 @@ namespace KMZ.Pages
             main.AddToList(KmlFile.Create(Fajel, true));
 
             main.IsEnabled = true;
-            this.Close();
+            Close();
         }
 
         private void OnClose_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void NewFileWindow_Closed(object sender, EventArgs e)
