@@ -24,6 +24,7 @@ namespace KMZ
         {
             InitializeComponent();
             KMLCollection = new List<KmlFile>();
+            SectionCollection = new List<Section>();
             LoadSettings();
         }
 
@@ -58,10 +59,7 @@ namespace KMZ
             }
             catch (Exception ex)
             {
-                if (ex.GetType().IsEquivalentTo(typeof(FileNotFoundException)))
-                {
-                    SaveSettings(new Settings());
-                }
+                throw ex;
             }
         }
 
@@ -91,7 +89,8 @@ namespace KMZ
 
         private void OnSectionFileClick(object sender, RoutedEventArgs e)
         {
-            
+            FileButton<Section> button = sender as FileButton<Section>;
+            OpenSection(button.File);
         }
 
         //private Map CreateMap(KmlFile file)
@@ -156,6 +155,12 @@ namespace KMZ
             editWindow.Show();
         }
 
+        private void OpenSection(Section section)
+        {
+            SectionReadWindow sectionReadWindow = new SectionReadWindow(section);
+            sectionReadWindow.ShowDialog();
+        }
+
         //private void ShowFile(KmlFile inputFile)
         //{
         //    Map MapWindow = CreateMap(inputFile);
@@ -178,6 +183,56 @@ namespace KMZ
                     foreach (var i in cont.Features)
                     {
                         ExtractPlacemarks(i, placemarks);
+                    }
+                }
+            }
+        }
+
+        private void SaveKmls()
+        {
+            foreach (KmlFile i in KMLCollection)
+            {
+                try
+                {
+                    FileStream str = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Kmz\data\kml\" + ((Kml)i.Root).Feature.Name, FileMode.OpenOrCreate);
+                    i.Save(str);
+                    MessageBox.Show("File saved");
+                }
+                catch
+                {
+                    try
+                    {
+                        Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Kmz\data\kml");
+                        FileStream str = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Kmz\data\kml\" + ((Kml)i.Root).Feature.Name, FileMode.OpenOrCreate);
+                        i.Save(str);
+                        MessageBox.Show("File saved");
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Save failed");
+                        throw;
+                    }
+                }
+            }
+        }
+
+        private void SaveSections()
+        {
+            foreach (Section i in SectionCollection)
+            {
+                try
+                {
+                    i.Image.Save(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Kmz\data\sections\" + i.Name + ".jpg");
+                }
+                catch (Exception ex)
+                {
+                    try
+                    {
+                        Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Kmz\data\sections");
+                    }
+                    catch
+                    {
+                        throw;
                     }
                 }
             }
@@ -244,13 +299,17 @@ namespace KMZ
                 str = LoadWindow.OpenFile();
                 if (str != null)
                 {
-                    System.Drawing.Image img = Bitmap.FromStream(str);
+                    Bitmap img = new Bitmap(str);
+                    //img.BeginInit();
+                    //img.StreamSource = str;
+                    //img.CacheOption = BitmapCacheOption.OnLoad;
+                    //img.EndInit();
+
                     StringPackage pac = new StringPackage("");
                     NewName newName = new NewName(pac);
                     newName.ShowDialog();
                     Section sec = new Section(pac.Content, img);
                     AddToList(sec);
-
                 }
             }
             catch
@@ -271,6 +330,8 @@ namespace KMZ
             {
                 Stack.Children.Clear();
                 KMLCollection.Clear();
+                SectionStack.Children.Clear();
+                SectionCollection.Clear();
             }
             ChangeButtons(false);
         }
@@ -343,7 +404,7 @@ namespace KMZ
 
             if (!na.Contains(".kml"))
                 na += ".kml";
-            
+
             foreach (FileButton<KmlFile> i in Stack.Children)
             {
                 if (i.IsClicked)
@@ -358,32 +419,14 @@ namespace KMZ
 
         private void OnSaveButtonClick(object sender, RoutedEventArgs e)
         {
-            foreach (KmlFile i in KMLCollection)
-            {
-                try
-                {
-                    FileStream str = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Kmz\data\" + ((Kml)i.Root).Feature.Name, FileMode.OpenOrCreate);
-                    i.Save(str);
-                    MessageBox.Show("File saved");
-                }
-                catch (Exception ex)
-                {
-                    if (ex.GetType().IsEquivalentTo(typeof(FileNotFoundException)))
-                    {
-                        Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Kmz\data\");
-                        FileStream str = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Kmz\data\" + ((Kml)i.Root).Feature.Name, FileMode.OpenOrCreate);
-                        i.Save(str);
-                        MessageBox.Show("File saved");
-                    }
-                    else
-                        MessageBox.Show("Save failed");
-                }
-            }
+            SaveKmls();
+            SaveSections();
         }
 
         private void OnLoadAllFilesClick(object sender, RoutedEventArgs e)
         {
-            DirectoryInfo di = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Kmz\data\");
+            //loading kmls
+            DirectoryInfo di = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Kmz\data\kml");
             FileInfo[] files = di.GetFiles("*.kml");
             foreach (FileInfo file in files)
             {
@@ -397,12 +440,30 @@ namespace KMZ
                 {
                 }
             }
+
+            //loading sections
+            di = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Kmz\data\sections");
+            files = di.GetFiles("*.jpg");
+            foreach (FileInfo file in files)
+            {
+                Section section = new Section();
+                try
+                {
+                    section.Image = Bitmap.FromStream(file.Open(FileMode.Open)) as Bitmap;
+                    section.Name = file.Name;
+                    AddToList(section);
+                }
+                catch
+                {
+                    throw;
+                }
+            }
         }
 
         private void OnDeleteButtonClick(object sender, RoutedEventArgs e)
         {
             KMLCollection.Remove(ChosenFile);
-            foreach (FileButton<KmlFile>i in Stack.Children)
+            foreach (FileButton<KmlFile> i in Stack.Children)
             {
                 if (i.IsClicked)
                 {
@@ -410,7 +471,7 @@ namespace KMZ
                     break;
                 }
             }
-            foreach (FileButton<KmlFile>i in Stack.Children)
+            foreach (FileButton<KmlFile> i in Stack.Children)
             {
                 i.IsEnabled = true;
             }
