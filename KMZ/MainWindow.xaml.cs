@@ -455,7 +455,6 @@ namespace KMZ
                 }
                 catch
                 {
-                    throw;
                 }
             }
         }

@@ -11,9 +11,14 @@
             <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="SectionName" Text="Section name" Margin="10" FontSize="20" TextAlignment="Center" FontWeight="Bold"/>
-        <Border Grid.Row="1" BorderThickness="2" BorderBrush="Black" Margin="10">
-            <Image x:Name="SectionImage"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock x:Name="SectionName" Text="Section name" Margin="10" FontSize="20" TextAlignment="Center" Grid.Column="0" FontWeight="Bold"/>
+        <TextBlock x:Name="CommandBlock" Text="Click on the 0,0 point" Margin="10" FontSize="20" TextAlignment="Center" Grid.Column="1" FontWeight="Bold" Width="275"/>
+        <Border Grid.Row="1" Grid.ColumnSpan="2" BorderThickness="2" BorderBrush="Black" Margin="10">
+            <Image x:Name="SectionImage" MouseDown="OnSectionClick"/>
         </Border>
     </Grid>
 </Window>
