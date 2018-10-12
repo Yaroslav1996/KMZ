@@ -25,11 +25,13 @@ namespace KMZ
             InitializeComponent();
             KMLCollection = new List<KmlFile>();
             SectionCollection = new List<Section>();
+            ProfileCollection = new List<Profile>();
             LoadSettings();
         }
 
         public List<KmlFile> KMLCollection { get; }
         public List<Section> SectionCollection { get; }
+        public List<Profile> ProfileCollection { get; }
         public KmlFile ChosenFile;
         public Settings Setts;
 
@@ -243,6 +245,7 @@ namespace KMZ
         private void ChangeButtons(bool to)
         {
             //this.ShowButton.IsEnabled = to;
+            this.MakeProfileButton.IsEnabled = to;
             this.EditButton.IsEnabled = to;
             this.ChangeName.IsEnabled = to;
             this.DeleteButton.IsEnabled = to;
@@ -476,7 +479,21 @@ namespace KMZ
 
         private void OnMakeProfileButtonClick(object sender, RoutedEventArgs e)
         {
+            Profile profile = new Profile();
+            profile.ProfKmlFile = ChosenFile;
+            ChooseSectionWindow chooseSectionWindow = new ChooseSectionWindow(profile);
 
+            foreach(Section i in SectionCollection)
+            {
+                FileButton<Section> button = new FileButton<Section>(i);
+                button.Margin = new Thickness(10, 5, 5, 10);
+                button.Content = i.Name;
+                button.Click += chooseSectionWindow.OnButtClick;
+                chooseSectionWindow.Stack.Children.Add(button);
+            }
+
+            chooseSectionWindow.ShowDialog();
+            ProfileCollection.Add(profile);
         }
     }
 }

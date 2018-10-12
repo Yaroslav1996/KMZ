@@ -2,11 +2,10 @@
 
 namespace KMZ.Classes
 {
-    class Profile
+    public class Profile
     {
         public Profile()
         {
-
         }
 
         public Profile(Section section, KmlFile kmlFile)

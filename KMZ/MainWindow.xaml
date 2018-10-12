@@ -38,13 +38,15 @@
         </Border>
         <Border Grid.Column="1" Grid.Row="0" BorderThickness="2" BorderBrush="Black" Margin="10,10,10,40">
             <ScrollViewer Grid.Column="1" Margin="10,30,10,40">
-                <StackPanel x:Name="Stack">
+                <StackPanel>
                     <TextBlock Text="Kml files" Margin="10" Height="40" TextAlignment="Center" FontSize="30" FontWeight="Bold" />
+                    <StackPanel x:Name="Stack">
+                    </StackPanel>
                 </StackPanel>
             </ScrollViewer>
         </Border>
         <StackPanel Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="30" Margin="5" Orientation="Horizontal">
-            <Button x:Name="MakeProfileButton" Content="Connect to section" Margin="10,0" Width="120" Click="OnMakeProfileButtonClick"/>
+            <Button x:Name="MakeProfileButton" Content="Connect to section" Margin="10,0" Width="120" IsEnabled="False" Click="OnMakeProfileButtonClick"/>
             <Button x:Name="LoadButton" Content="Load files" Margin="10,0" Width="80" Click="OnLoadAllFilesClick" />
             <Button x:Name="SaveButton" Content="Save changes" Margin="10,0" Width="80" Click="OnSaveButtonClick" />
             <!-- <Button x:Name="ShowButton" Content="Show file" Margin="10,0" Width="80" IsEnabled="False" Click="OnShowButtonClick" /> -->
