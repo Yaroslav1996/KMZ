@@ -19,12 +19,15 @@ namespace KMZ.Pages
 
     public partial class SectionReadWindow : Window
     {
-        public SectionReadWindow(Section section)
+        public SectionReadWindow(Section section, bool showing)
         {
             InitializeComponent();
             Points = new List<Point>();
             SectionName.Text = section.Name;
             SectionImage.Source = BitmapConversion.ToWpfBitmap(section.Image);
+            IsOnlyShowing = showing;
+            if (showing)
+                CommandBlock.Visibility = Visibility.Hidden;
         }
 
         public List<Point> Points { get; set; }
@@ -43,23 +46,28 @@ namespace KMZ.Pages
                         CommandBlock.Text = "Click on the 0,0 point";
                         _State = value;
                         break;
+
                     case PointingState.DistPoint:
                         CommandBlock.Text = "Click on the point 1 unit along the profile";
                         _State = value;
                         break;
+
                     case PointingState.DepthPoint:
                         CommandBlock.Text = "Click on the point 1 unit deep.";
                         _State = value;
                         break;
+
                     case PointingState.LayerPoints:
                         CommandBlock.Text = "Click on the points along the layer";
                         _State = value;
                         break;
+
                     default:
                         break;
                 }
             }
         }
+        public bool IsOnlyShowing { get; set; }
 
         private Point GetCoords(MouseButtonEventArgs e)
         {
@@ -73,25 +81,32 @@ namespace KMZ.Pages
 
         private void ClickProcessing(Point point)
         {
-            switch (State)
+            if (!IsOnlyShowing)
             {
-                case PointingState.ZeroPoint:
-                    ZeroPoint = point;
-                    State++;
-                    break;
-                case PointingState.DistPoint:
-                    Dist = point.X;
-                    State++;
-                    break;
-                case PointingState.DepthPoint:
-                    Depth = point.Y;
-                    State++;
-                    break;
-                case PointingState.LayerPoints:
-                    Points.Add(point);
-                    break;
-                default:
-                    break;
+                switch (State)
+                {
+                    case PointingState.ZeroPoint:
+                        ZeroPoint = point;
+                        State++;
+                        break;
+
+                    case PointingState.DistPoint:
+                        Dist = point.X;
+                        State++;
+                        break;
+
+                    case PointingState.DepthPoint:
+                        Depth = point.Y;
+                        State++;
+                        break;
+
+                    case PointingState.LayerPoints:
+                        Points.Add(point);
+                        break;
+
+                    default:
+                        break;
+                }
             }
         }
     }

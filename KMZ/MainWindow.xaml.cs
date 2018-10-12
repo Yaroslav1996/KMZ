@@ -157,7 +157,7 @@ namespace KMZ
 
         private void OpenSection(Section section)
         {
-            SectionReadWindow sectionReadWindow = new SectionReadWindow(section);
+            SectionReadWindow sectionReadWindow = new SectionReadWindow(section, true);
             sectionReadWindow.ShowDialog();
         }
 
@@ -210,7 +210,6 @@ namespace KMZ
                     catch
                     {
                         MessageBox.Show("Save failed");
-                        throw;
                     }
                 }
             }
@@ -222,9 +221,12 @@ namespace KMZ
             {
                 try
                 {
-                    i.Image.Save(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Kmz\data\sections\" + i.Name + ".jpg");
+                    if (i.Name.Contains(".jpg"))
+                        i.Image.Save(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Kmz\data\sections\" + i.Name);
+                    else
+                        i.Image.Save(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Kmz\data\sections\" + i.Name + ".jpg");
                 }
-                catch (Exception ex)
+                catch
                 {
                     try
                     {
@@ -300,10 +302,6 @@ namespace KMZ
                 if (str != null)
                 {
                     Bitmap img = new Bitmap(str);
-                    //img.BeginInit();
-                    //img.StreamSource = str;
-                    //img.CacheOption = BitmapCacheOption.OnLoad;
-                    //img.EndInit();
 
                     StringPackage pac = new StringPackage("");
                     NewName newName = new NewName(pac);
@@ -474,6 +472,11 @@ namespace KMZ
             {
                 i.IsEnabled = true;
             }
+        }
+
+        private void OnMakeProfileButtonClick(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
