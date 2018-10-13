@@ -12,8 +12,7 @@ namespace KMZ.Pages
     public enum PointingState
     {
         ZeroPoint,
-        DistPoint,
-        DepthPoint,
+        LastPoint,
         LayerPoints
     }
 
@@ -32,8 +31,7 @@ namespace KMZ.Pages
 
         public List<Point> Points { get; set; }
         public Point ZeroPoint { get; set; } //point on the 0,0 coords
-        public double Dist { get; set; } //distance unit
-        public double Depth { get; set; } //depth unit
+        public Point LastPoint { get; set; }
         private PointingState _State;
         public PointingState State
         {
@@ -47,13 +45,8 @@ namespace KMZ.Pages
                         _State = value;
                         break;
 
-                    case PointingState.DistPoint:
-                        CommandBlock.Text = "Click on the point 1 unit along the profile";
-                        _State = value;
-                        break;
-
-                    case PointingState.DepthPoint:
-                        CommandBlock.Text = "Click on the point 1 unit deep.";
+                    case PointingState.LastPoint:
+                        CommandBlock.Text = "Click on the low-right point";
                         _State = value;
                         break;
 
@@ -90,13 +83,8 @@ namespace KMZ.Pages
                         State++;
                         break;
 
-                    case PointingState.DistPoint:
-                        Dist = point.X;
-                        State++;
-                        break;
-
-                    case PointingState.DepthPoint:
-                        Depth = point.Y;
+                    case PointingState.LastPoint:
+                        LastPoint = point;
                         State++;
                         break;
 

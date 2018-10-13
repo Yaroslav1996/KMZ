@@ -37,10 +37,10 @@ namespace KMZ
 
         public void SaveSettings()
         {
-            XmlSerializer writter = new XmlSerializer(typeof(Settings));
-            StreamWriter newFile = new StreamWriter("setts.xml");
-            writter.Serialize(newFile, Setts);
-            newFile.Close();
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(Settings));
+            StreamWriter writer = new StreamWriter("setts.xml");
+            xmlSerializer.Serialize(writer, Setts);
+            writer.Close();
         }
 
         public void SaveSettings(Settings file)
@@ -59,9 +59,9 @@ namespace KMZ
                 XmlSerializer reader = new XmlSerializer(typeof(Settings));
                 Setts = reader.Deserialize(file) as Settings;
             }
-            catch (Exception ex)
+            catch
             {
-                throw ex;
+                MessageBox.Show("Unable to create settings file");
             }
         }
 
@@ -87,6 +87,18 @@ namespace KMZ
             newButt.Click += OnSectionFileClick;
             SectionStack.Children.Add(newButt);
             SectionCollection.Add(file);
+        }
+
+        public void AddToList(Profile file)
+        {
+            FileButton<Profile> fileButton = new FileButton<Profile>(file)
+            {
+                Margin = new Thickness(10, 5, 5, 10),
+                Content = file.Name,
+            };
+            fileButton.Click += OnProfileButtonClick;
+            ProfilesStack.Children.Add(fileButton);
+            ProfileCollection.Add(file);
         }
 
         private void OnSectionFileClick(object sender, RoutedEventArgs e)
@@ -169,27 +181,7 @@ namespace KMZ
 
         //    MapWindow.Show();
         //}
-
-        public static void ExtractPlacemarks(Feature feat, List<Placemark> placemarks)
-        {
-            Placemark placemark = feat as Placemark;
-            if (placemark != null)
-            {
-                placemarks.Add(placemark);
-            }
-            else
-            {
-                Container cont = feat as Container;
-                if (cont != null)
-                {
-                    foreach (var i in cont.Features)
-                    {
-                        ExtractPlacemarks(i, placemarks);
-                    }
-                }
-            }
-        }
-
+        
         private void SaveKmls()
         {
             foreach (KmlFile i in KMLCollection)
@@ -198,7 +190,6 @@ namespace KMZ
                 {
                     FileStream str = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Kmz\data\kml\" + ((Kml)i.Root).Feature.Name, FileMode.OpenOrCreate);
                     i.Save(str);
-                    MessageBox.Show("File saved");
                 }
                 catch
                 {
@@ -207,11 +198,10 @@ namespace KMZ
                         Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Kmz\data\kml");
                         FileStream str = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Kmz\data\kml\" + ((Kml)i.Root).Feature.Name, FileMode.OpenOrCreate);
                         i.Save(str);
-                        MessageBox.Show("File saved");
                     }
                     catch
                     {
-                        MessageBox.Show("Save failed");
+                        MessageBox.Show("Kml save failed");
                     }
                 }
             }
@@ -236,12 +226,12 @@ namespace KMZ
                     }
                     catch
                     {
-                        throw;
+                        MessageBox.Show("Sections save failed");
                     }
                 }
             }
         }
-
+        
         private void ChangeButtons(bool to)
         {
             //this.ShowButton.IsEnabled = to;
@@ -379,6 +369,38 @@ namespace KMZ
             }
         }
 
+        private void OnProfileButtonClick(object sender, RoutedEventArgs e)
+        {
+            FileButton<Profile> fileButton = sender as FileButton<Profile>;
+            SectionReadWindow sectionReadWindow = new SectionReadWindow(fileButton.File.ProfSection, false);
+            sectionReadWindow.ShowDialog();
+
+            Kml file = (Kml)fileButton.File.ProfKmlFile.Root;
+            List<Placemark> lineList = new List<Placemark>();
+            ExtractPlacemarks(file.Feature, lineList);
+            LineString line = new LineString();
+
+            try
+            {
+                line = lineList[0].Geometry as LineString;
+            }
+            catch
+            {
+                MessageBox.Show("Kml nie posiada profilu");
+            }
+
+            List<SharpKml.Base.Vector> points = new List<SharpKml.Base.Vector>();
+
+            foreach (SharpKml.Base.Vector i in line.Coordinates)
+            {
+                points.Add(i);
+            }
+
+            double profLength = CalculateDistance(points[points.Count - 1].Latitude, points[points.Count - 1].Longitude, points[0].Latitude, points[0].Longitude);
+            double sectionLength = sectionReadWindow.LastPoint.X - sectionReadWindow.ZeroPoint.X;
+            double scale = profLength / sectionLength;
+        }
+
         //private void OnShowButtonClick(object sender, RoutedEventArgs e)
         //{
         //    ShowFile(ChosenFile);
@@ -426,38 +448,54 @@ namespace KMZ
 
         private void OnLoadAllFilesClick(object sender, RoutedEventArgs e)
         {
-            //loading kmls
-            DirectoryInfo di = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Kmz\data\kml");
-            FileInfo[] files = di.GetFiles("*.kml");
-            foreach (FileInfo file in files)
+            #region Loading KML files
+
+            try
             {
-                KmlFile kmlFile;
-                try
+                DirectoryInfo di = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Kmz\data\kml");
+                FileInfo[] files = di.GetFiles("*.kml");
+                foreach (FileInfo file in files)
                 {
-                    kmlFile = KmlFile.Load(file.Open(FileMode.Open));
-                    AddToList(kmlFile);
+                    KmlFile kmlFile;
+                    try
+                    {
+                        kmlFile = KmlFile.Load(file.Open(FileMode.Open));
+                        AddToList(kmlFile);
+                    }
+                    catch
+                    {
+                    }
                 }
-                catch
-                {
-                }
+            }
+            catch
+            {
             }
 
-            //loading sections
-            di = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Kmz\data\sections");
-            files = di.GetFiles("*.jpg");
-            foreach (FileInfo file in files)
+            #endregion Loading KML files
+
+            #region Loading sections
+
+            try
             {
-                Section section = new Section();
-                try
+                DirectoryInfo di = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Kmz\data\sections");
+                FileInfo[] files = di.GetFiles("*.jpg");
+                foreach (FileInfo file in files)
                 {
-                    section.Image = Bitmap.FromStream(file.Open(FileMode.Open)) as Bitmap;
-                    section.Name = file.Name;
-                    AddToList(section);
-                }
-                catch
-                {
+                    Section section = new Section();
+                    try
+                    {
+                        section.Image = Bitmap.FromStream(file.Open(FileMode.Open)) as Bitmap;
+                        section.Name = file.Name;
+                        AddToList(section);
+                    }
+                    catch
+                    {
+                    }
                 }
             }
+            catch
+            { }
+            #endregion Loading sections
         }
 
         private void OnDeleteButtonClick(object sender, RoutedEventArgs e)
@@ -483,7 +521,7 @@ namespace KMZ
             profile.ProfKmlFile = ChosenFile;
             ChooseSectionWindow chooseSectionWindow = new ChooseSectionWindow(profile);
 
-            foreach(Section i in SectionCollection)
+            foreach (Section i in SectionCollection)
             {
                 FileButton<Section> button = new FileButton<Section>(i);
                 button.Margin = new Thickness(10, 5, 5, 10);
@@ -493,7 +531,54 @@ namespace KMZ
             }
 
             chooseSectionWindow.ShowDialog();
-            ProfileCollection.Add(profile);
+            StringPackage pac = new StringPackage("");
+            NewName newName = new NewName(pac);
+            newName.ShowDialog();
+            profile.Name = pac.Content;
+            AddToList(profile);
         }
+
+        public static void ExtractPlacemarks(Feature feat, List<Placemark> placemarks)
+        {
+            Placemark placemark = feat as Placemark;
+            if (placemark != null)
+            {
+                placemarks.Add(placemark);
+            }
+            else
+            {
+                Container cont = feat as Container;
+                if (cont != null)
+                {
+                    foreach (var i in cont.Features)
+                    {
+                        ExtractPlacemarks(i, placemarks);
+                    }
+                }
+            }
+        }
+
+        public static double CalculateDistance(double sLatitude, double sLongitude, double eLatitude, double eLongitude)
+        {
+            var radiansOverDegrees = (Math.PI / 180.0);
+
+            var sLatitudeRadians = sLatitude * radiansOverDegrees;
+            var sLongitudeRadians = sLongitude * radiansOverDegrees;
+            var eLatitudeRadians = eLatitude * radiansOverDegrees;
+            var eLongitudeRadians = eLongitude * radiansOverDegrees;
+
+            var dLongitude = eLongitudeRadians - sLongitudeRadians;
+            var dLatitude = eLatitudeRadians - sLatitudeRadians;
+
+            var result1 = Math.Pow(Math.Sin(dLatitude / 2.0), 2.0) +
+                          Math.Cos(sLatitudeRadians) * Math.Cos(eLatitudeRadians) *
+                          Math.Pow(Math.Sin(dLongitude / 2.0), 2.0);
+
+            // Using 3956 as the number of miles around the earth
+            var result2 = 6371 * 2.0 * Math.Atan2(Math.Sqrt(result1), Math.Sqrt(1.0 - result1));
+
+            return result2;
+        }
+
     }
 }

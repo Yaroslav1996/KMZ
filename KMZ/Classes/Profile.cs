@@ -14,6 +14,7 @@ namespace KMZ.Classes
             ProfKmlFile = kmlFile;
         }
 
+        public string Name { get; set; }
         public Section ProfSection { get; set; }
         public KmlFile ProfKmlFile { get; set; }
     }
