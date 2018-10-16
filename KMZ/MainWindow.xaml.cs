@@ -4,6 +4,7 @@ using KMZ.Pages;
 using Microsoft.Win32;
 using SharpKml.Dom;
 using SharpKml.Engine;
+using Coord = SharpKml.Base;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -243,10 +244,9 @@ namespace KMZ
 
         private void OnManualClick(object sender, RoutedEventArgs e)
         {
-            List<SharpKml.Base.Vector> coorList = new List<SharpKml.Base.Vector>();
+            List<Coord.Vector> coorList = new List<Coord.Vector>();
             NewFileWindow newFileWindow = new NewFileWindow(this);
-            newFileWindow.Show();
-            this.IsEnabled = false;
+            newFileWindow.ShowDialog();
         }
 
         private void OnLoadFileClick(object sender, RoutedEventArgs e)
@@ -379,6 +379,7 @@ namespace KMZ
             List<Placemark> lineList = new List<Placemark>();
             ExtractPlacemarks(file.Feature, lineList);
             LineString line = new LineString();
+            
 
             try
             {
@@ -386,19 +387,43 @@ namespace KMZ
             }
             catch
             {
-                MessageBox.Show("Kml nie posiada profilu");
+                MessageBox.Show("Kml doesn't include a linestring");
             }
 
-            List<SharpKml.Base.Vector> points = new List<SharpKml.Base.Vector>();
+            List<Coord.Vector> points = new List<Coord.Vector>();
 
-            foreach (SharpKml.Base.Vector i in line.Coordinates)
+            foreach (Coord.Vector i in line.Coordinates)
             {
                 points.Add(i);
             }
 
-            double profLength = CalculateDistance(points[points.Count - 1].Latitude, points[points.Count - 1].Longitude, points[0].Latitude, points[0].Longitude);
+            Coord.Vector startCoord = points[0];
+            Coord.Vector endCoord = points[points.Count - 1];
+
+            double profLength = CoordinatesCalculator.CalculateDistance(endCoord.Latitude, endCoord.Longitude, startCoord.Latitude, startCoord.Longitude);
             double sectionLength = sectionReadWindow.LastPoint.X - sectionReadWindow.ZeroPoint.X;
             double scale = profLength / sectionLength;
+            double maxDepth = sectionReadWindow.LastPoint.Y - sectionReadWindow.ZeroPoint.Y;
+            int pointsAmount = sectionReadWindow.Points.Count;
+
+            List<System.Windows.Point> secPoints = sectionReadWindow.Points;
+
+            Document document = new Document();
+
+            for (int i = 0; i < pointsAmount; i++)
+            {
+                int depth;
+                if(i == 0 || i == pointsAmount - 1)
+                {
+                    depth = (int)(secPoints[i].Y / maxDepth * 255);
+                }
+                else
+                {
+                    depth = (int)((secPoints[i].Y + secPoints[i - 1].Y) / 2 / maxDepth * 255);
+                }
+
+                double dist = (secPoints[i].X - secPoints[i - 1].X) * scale;
+            }
         }
 
         //private void OnShowButtonClick(object sender, RoutedEventArgs e)
@@ -558,27 +583,27 @@ namespace KMZ
             }
         }
 
-        public static double CalculateDistance(double sLatitude, double sLongitude, double eLatitude, double eLongitude)
+        
+
+        public void AddSingleLineToContainer(Coord.Vector start, Coord.Vector end, int color, Container container)
         {
-            var radiansOverDegrees = (Math.PI / 180.0);
+            SharpKml.Dom.Style style = new SharpKml.Dom.Style();
 
-            var sLatitudeRadians = sLatitude * radiansOverDegrees;
-            var sLongitudeRadians = sLongitude * radiansOverDegrees;
-            var eLatitudeRadians = eLatitude * radiansOverDegrees;
-            var eLongitudeRadians = eLongitude * radiansOverDegrees;
+            style.Id = "LineStyle";
+            style.Line = new LineStyle();
+            style.Line.Color = new Coord.Color32(color);
 
-            var dLongitude = eLongitudeRadians - sLongitudeRadians;
-            var dLatitude = eLatitudeRadians - sLatitudeRadians;
+            Placemark placemark = new Placemark();
+            placemark.StyleUrl = new Uri("#LineStyle", UriKind.Relative);
 
-            var result1 = Math.Pow(Math.Sin(dLatitude / 2.0), 2.0) +
-                          Math.Cos(sLatitudeRadians) * Math.Cos(eLatitudeRadians) *
-                          Math.Pow(Math.Sin(dLongitude / 2.0), 2.0);
+            LineString lineString = new LineString();
+            lineString.Coordinates.Add(start);
+            lineString.Coordinates.Add(end);
 
-            // Using 3956 as the number of miles around the earth
-            var result2 = 6371 * 2.0 * Math.Atan2(Math.Sqrt(result1), Math.Sqrt(1.0 - result1));
-
-            return result2;
+            placemark.Geometry = lineString;
+            container.AddFeature(placemark);
+            container.AddStyle(style);
         }
-
+        
     }
 }
