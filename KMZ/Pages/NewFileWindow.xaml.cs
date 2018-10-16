@@ -58,8 +58,7 @@ namespace KMZ.Pages
             Fajel.Feature = placemark;
            
             main.AddToList(KmlFile.Create(Fajel, true));
-
-            main.IsEnabled = true;
+            
             Close();
         }
 
