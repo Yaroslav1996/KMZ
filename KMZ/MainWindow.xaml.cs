@@ -4,7 +4,6 @@ using KMZ.Pages;
 using Microsoft.Win32;
 using SharpKml.Dom;
 using SharpKml.Engine;
-using Coord = SharpKml.Base;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -13,6 +12,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Xml.Serialization;
+using Coord = SharpKml.Base;
 
 namespace KMZ
 {
@@ -136,6 +136,7 @@ namespace KMZ
             }
             else if (Setts.SpareCopy == Setting.No)
             {
+                //edit existing file without spare copy
             }
             else
             {
@@ -182,7 +183,7 @@ namespace KMZ
 
         //    MapWindow.Show();
         //}
-        
+
         private void SaveKmls()
         {
             foreach (KmlFile i in KMLCollection)
@@ -232,7 +233,7 @@ namespace KMZ
                 }
             }
         }
-        
+
         private void ChangeButtons(bool to)
         {
             //this.ShowButton.IsEnabled = to;
@@ -378,9 +379,8 @@ namespace KMZ
             Kml file = (Kml)fileButton.File.ProfKmlFile.Root;
             List<Placemark> lineList = new List<Placemark>();
             ExtractPlacemarks(file.Feature, lineList);
-            LineString line = new LineString();
-            
 
+            LineString line = new LineString();
             try
             {
                 line = lineList[0].Geometry as LineString;
@@ -392,37 +392,66 @@ namespace KMZ
 
             List<Coord.Vector> points = new List<Coord.Vector>();
 
-            foreach (Coord.Vector i in line.Coordinates)
+            foreach (Coord.Vector j in line.Coordinates)
             {
-                points.Add(i);
+                points.Add(j);
             }
 
             Coord.Vector startCoord = points[0];
             Coord.Vector endCoord = points[points.Count - 1];
+            List<System.Windows.Point> secPoints = sectionReadWindow.Points;
+            List<Coord.Vector> vectors = new List<Coord.Vector>();
 
-            double profLength = CoordinatesCalculator.CalculateDistance(endCoord.Latitude, endCoord.Longitude, startCoord.Latitude, startCoord.Longitude);
+            int pointsAmount = sectionReadWindow.Points.Count;
+            double profLength = CoordinatesCalculator.CalculateDistance(startCoord.Latitude, startCoord.Longitude, endCoord.Latitude, endCoord.Longitude);
             double sectionLength = sectionReadWindow.LastPoint.X - sectionReadWindow.ZeroPoint.X;
             double scale = profLength / sectionLength;
             double maxDepth = sectionReadWindow.LastPoint.Y - sectionReadWindow.ZeroPoint.Y;
-            int pointsAmount = sectionReadWindow.Points.Count;
+            double azimuth = CoordinatesCalculator.CalculateBearing(startCoord, endCoord);
 
-            List<System.Windows.Point> secPoints = sectionReadWindow.Points;
-
-            Document document = new Document();
+            List<byte> depths = new List<byte>();
 
             for (int i = 0; i < pointsAmount; i++)
             {
-                int depth;
-                if(i == 0 || i == pointsAmount - 1)
+                byte depth = (byte)(secPoints[i].Y / maxDepth * 255);
+                double dist;
+
+                if (i == 0)
                 {
-                    depth = (int)(secPoints[i].Y / maxDepth * 255);
+                    dist = secPoints[i].X * scale;
+                    vectors.Add(startCoord);
+                    depths.Add((byte)(sectionReadWindow.ZeroPoint.Y / maxDepth * 255));
+                }
+                else if (i == pointsAmount - 1)
+                {
+                    dist = (sectionReadWindow.LastPoint.X - secPoints[i].X) * scale;
                 }
                 else
                 {
-                    depth = (int)((secPoints[i].Y + secPoints[i - 1].Y) / 2 / maxDepth * 255);
+                    dist = (secPoints[i].X - secPoints[i - 1].X) * scale;
                 }
 
-                double dist = (secPoints[i].X - secPoints[i - 1].X) * scale;
+                Coord.Vector vector = CoordinatesCalculator.CalculatePoint(vectors[vectors.Count - 1], dist, azimuth);
+                vectors.Add(vector);
+                depths.Add(depth);
+            }
+
+            Document document = new Document();
+            document.Name = fileButton.File.Name + ".kml";
+
+            for (int i = 1; i < vectors.Count; i++)
+            {
+                AddSingleLineToContainer(vectors[i - 1], vectors[i], (byte)((depths[i] + depths[i - 1]) / 2), document, i);
+            }
+
+            Kml kml = new Kml();
+            kml.Feature = document;
+            KmlFile kmlFile = KmlFile.Create(kml, true);
+
+            AddToList(kmlFile);
+            foreach(FileButton<KmlFile> i in Stack.Children)
+            {
+                i.IsEnabled = true;
             }
         }
 
@@ -583,20 +612,20 @@ namespace KMZ
             }
         }
 
-        
-
-        public void AddSingleLineToContainer(Coord.Vector start, Coord.Vector end, int color, Container container)
+        public void AddSingleLineToContainer(Coord.Vector start, Coord.Vector end, byte color, Container container, int number)
         {
             SharpKml.Dom.Style style = new SharpKml.Dom.Style();
 
-            style.Id = "LineStyle";
+            style.Id = "LineStyle" + number.ToString();
             style.Line = new LineStyle();
-            style.Line.Color = new Coord.Color32(color);
+            style.Line.Color = new Coord.Color32(255, 0, (byte)(255 - color), color);
+            style.Line.Width = 3;
 
             Placemark placemark = new Placemark();
-            placemark.StyleUrl = new Uri("#LineStyle", UriKind.Relative);
+            placemark.StyleUrl = new Uri("LineStyle" + number.ToString(), UriKind.Relative);
 
             LineString lineString = new LineString();
+            lineString.Coordinates = new CoordinateCollection();
             lineString.Coordinates.Add(start);
             lineString.Coordinates.Add(end);
 
@@ -604,6 +633,5 @@ namespace KMZ
             container.AddFeature(placemark);
             container.AddStyle(style);
         }
-        
     }
 }
