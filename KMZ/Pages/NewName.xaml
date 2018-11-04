@@ -15,6 +15,6 @@
 
         <TextBlock Margin="40" Grid.Row="0" Text="Podaj nową nazwę:" TextAlignment="Center" FontSize="30" />
         <TextBox x:Name="NewNameBox" Margin="40" Grid.Row="1" TextAlignment="Center" FontSize="30" />
-        <Button x:Name="ConfirmNameButton" Content="Confirm" Grid.Row="2" Margin="40" Width="150" Click="OnConfirmButtonClick"/>
+        <Button x:Name="ConfirmNameButton" Content="Zatwierdź" Grid.Row="2" Margin="40" Width="150" Click="OnConfirmButtonClick"/>
     </Grid>
 </Window>

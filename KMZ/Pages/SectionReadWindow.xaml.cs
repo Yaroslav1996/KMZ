@@ -41,17 +41,17 @@ namespace KMZ.Pages
                 switch (value)
                 {
                     case PointingState.ZeroPoint:
-                        CommandBlock.Text = "Click on the 0,0 point";
+                        CommandBlock.Text = "Zaznacz punkt w lewym-górnym rogu profilu";
                         _State = value;
                         break;
 
                     case PointingState.LastPoint:
-                        CommandBlock.Text = "Click on the low-right point";
+                        CommandBlock.Text = "Zaznacz punkt w prawym-dolnym rogu profilu";
                         _State = value;
                         break;
 
                     case PointingState.LayerPoints:
-                        CommandBlock.Text = "Click on the points along the layer";
+                        CommandBlock.Text = "Zaznaczaj punty wzdłuż wybranej warstwy";
                         _State = value;
                         break;
 

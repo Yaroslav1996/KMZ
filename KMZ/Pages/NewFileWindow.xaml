@@ -11,12 +11,12 @@
     <Grid>
         <ScrollViewer>
             <StackPanel>
-                <TextBox x:Name="NewFileName" Height="100" Margin="40" TextAlignment="Center" FontSize="40" Text="Enter file name" Padding="15"/>
+                <TextBox x:Name="NewFileName" Height="100" Margin="40" TextAlignment="Center" FontSize="40" Text="Podaj nazwę pliku" Padding="15"/>
                 <StackPanel x:Name="Stack">
 
                 </StackPanel>
-                <Button x:Name="NewPointButton" Height="100" Content="New point" FontSize="30" Click="OnNewPointButton_Click" Margin="0,40"/>
-                <Button x:Name="Close" Height="100" Content="Close" FontSize="30" Click="OnClose_Click"  Margin="0,40"/>
+                <Button x:Name="NewPointButton" Height="100" Content="Nowy punkt" FontSize="30" Click="OnNewPointButton_Click" Margin="0,40"/>
+                <Button x:Name="Close" Height="100" Content="Stwórz plik" FontSize="30" Click="OnClose_Click"  Margin="0,40"/>
             </StackPanel>
         </ScrollViewer>
     </Grid>

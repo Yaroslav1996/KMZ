@@ -13,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Xml.Serialization;
 using Coord = SharpKml.Base;
+using System.Linq;
 
 namespace KMZ
 {
@@ -408,12 +409,18 @@ namespace KMZ
             double scale = profLength / sectionLength;
             double maxDepth = sectionReadWindow.LastPoint.Y - sectionReadWindow.ZeroPoint.Y;
             double azimuth = CoordinatesCalculator.CalculateBearing(startCoord, endCoord);
+            var pp = from t in secPoints
+                     orderby t.X ascending
+                     select t;
+
+            secPoints = pp.ToList<System.Windows.Point>();
 
             List<byte> depths = new List<byte>();
+            byte depth = new byte();
 
             for (int i = 0; i < pointsAmount; i++)
             {
-                byte depth = (byte)(secPoints[i].Y / maxDepth * 255);
+                depth = (byte)(secPoints[i].Y / maxDepth * 255);
                 double dist;
 
                 if (i == 0)
@@ -422,10 +429,10 @@ namespace KMZ
                     vectors.Add(startCoord);
                     depths.Add((byte)(sectionReadWindow.ZeroPoint.Y / maxDepth * 255));
                 }
-                else if (i == pointsAmount - 1)
-                {
-                    dist = (sectionReadWindow.LastPoint.X - secPoints[i].X) * scale;
-                }
+                //else if (i == pointsAmount - 1)
+                //{
+                //    dist = (sectionReadWindow.LastPoint.X - secPoints[i].X) * scale;
+                //}
                 else
                 {
                     dist = (secPoints[i].X - secPoints[i - 1].X) * scale;
@@ -435,6 +442,8 @@ namespace KMZ
                 vectors.Add(vector);
                 depths.Add(depth);
             }
+            vectors.Add(endCoord);
+            depths.Add(depth);
 
             Document document = new Document();
             document.Name = fileButton.File.Name + ".kml";

@@ -21,25 +21,27 @@
         </Button>
         <Border Grid.Column="0" Grid.Row="0" BorderThickness="2" BorderBrush="Black" Margin="10,10,10,40">
             <StackPanel Margin="30">
-                <Button Height="50" Margin="20" Content="Load File" Click="OnLoadFileClick" />
-                <Button Height="50" Margin="20" Content="Insert Manually" Click="OnManualClick" />
-                <Button Height="50" Margin="20" Content="Load Section" Click="OnLoadSectionClick" />
+                <Button Height="50" Margin="20" Content="Wczytaj plik KML" Click="OnLoadFileClick" />
+                <Button Height="50" Margin="20" Content="Stwórz plik KML ręcznie" Click="OnManualClick" />
+                <Button Height="50" Margin="20" Content="Wczytaj przekrój" Click="OnLoadSectionClick" />
             </StackPanel>
         </Border>
         <Border Grid.Column="0" Grid.Row="1" BorderThickness="2" BorderBrush="Black" Margin="10,10,10,40">
-            <StackPanel  Margin="30" x:Name="SectionStack">
-                <TextBlock Text="Sections" Margin="10" Height="40" TextAlignment="Center" FontSize="30" FontWeight="Bold" />
+            <StackPanel Margin="30">
+                <TextBlock Text="Przekroje" Margin="10" Height="40" TextAlignment="Center" FontSize="30" FontWeight="Bold" />
+                <StackPanel  Margin="30" x:Name="SectionStack">
+                </StackPanel>
             </StackPanel>
         </Border>
         <Border Grid.Column="1" Grid.Row="1" BorderThickness="2" BorderBrush="Black" Margin="10,10,10,40">
             <StackPanel Margin="30" x:Name="ProfilesStack">
-                <TextBlock Text="Profiles" Margin="10" Height="40" TextAlignment="Center" FontSize="30" FontWeight="Bold" />
+                <TextBlock Text="Profile" Margin="10" Height="40" TextAlignment="Center" FontSize="30" FontWeight="Bold" />
             </StackPanel>
         </Border>
         <Border Grid.Column="1" Grid.Row="0" BorderThickness="2" BorderBrush="Black" Margin="10,10,10,40">
             <ScrollViewer Grid.Column="1" Margin="10,30,10,40">
                 <StackPanel>
-                    <TextBlock Text="Kml files" Margin="10" Height="40" TextAlignment="Center" FontSize="30" FontWeight="Bold" />
+                    <TextBlock Text="Pliki KML" Margin="10" Height="40" TextAlignment="Center" FontSize="30" FontWeight="Bold" />
                     <StackPanel x:Name="Stack">
                     </StackPanel>
                 </StackPanel>
