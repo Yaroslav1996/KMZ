@@ -32,7 +32,7 @@ namespace KMZ.Pages
         public List<Point> Points { get; set; }
         public Point ZeroPoint { get; set; } //point on the 0,0 coords
         public Point LastPoint { get; set; }
-        private PointingState _State;
+        private PointingState _State = PointingState.ZeroPoint;
         public PointingState State
         {
             get => _State;

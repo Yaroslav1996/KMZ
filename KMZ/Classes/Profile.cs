@@ -12,6 +12,7 @@ namespace KMZ.Classes
         {
             ProfSection = section;
             ProfKmlFile = kmlFile;
+            Name = ProfSection.Name;
         }
 
         public string Name { get; set; }

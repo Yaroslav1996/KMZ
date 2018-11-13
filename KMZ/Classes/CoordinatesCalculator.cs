@@ -10,11 +10,11 @@ namespace KMZ.Classes
         /// <summary>
         /// Calculates distance between two coordinates
         /// </summary>
-        /// <param name="sLatitude">First point latitude in degrees</param>
-        /// <param name="sLongitude">First point longitude in degrees</param>
-        /// <param name="eLatitude">Second point latitude in degrees</param>
-        /// <param name="eLongitude">Second point longitude in degrees</param>
-        /// <returns>Distance in kilometers</returns>
+        /// <param name="elat1"></param>
+        /// <param name="elon1"></param>
+        /// <param name="elat2"></param>
+        /// <param name="elon2"></param>
+        /// <returns></returns>
         public static double CalculateDistance(double elat1, double elon1, double elat2, double elon2) //works
         {
             var radiansOverDegrees = (Math.PI / 180.0);
@@ -36,6 +36,12 @@ namespace KMZ.Classes
             return result2;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="position1"></param>
+        /// <param name="position2"></param>
+        /// <returns></returns>
         public static double CalculateBearing(Coord.Vector position1, Coord.Vector position2) //works
         {
             var lat1 = AngleConverter.ConvertDegreesToRadians(position1.Latitude);

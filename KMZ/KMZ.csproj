@@ -167,7 +167,6 @@
     <Compile Include="Classes\AngleConverter.cs" />
     <Compile Include="Classes\BitmapConversion.cs" />
     <Compile Include="Classes\CoordinatesCalculator.cs" />
-    <Compile Include="Classes\File.cs" />
     <Compile Include="Classes\FileButton.cs" />
     <Compile Include="Classes\Profile.cs" />
     <Compile Include="Classes\Section.cs" />

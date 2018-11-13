@@ -13,49 +13,33 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="25" />
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Button x:Name="SettingsButton" Grid.Row="1" Height="30" Width="30"  VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="5" Click="OnSettingsButtonClick">
-            <Image Source="Data/img/settings.png"></Image>
-        </Button>
-        <Border Grid.Column="0" Grid.Row="0" BorderThickness="2" BorderBrush="Black" Margin="10,10,10,40">
-            <StackPanel Margin="30">
-                <Button Height="50" Margin="20" Content="Wczytaj plik KML" Click="OnLoadFileClick" />
-                <Button Height="50" Margin="20" Content="Stwórz plik KML ręcznie" Click="OnManualClick" />
-                <Button Height="50" Margin="20" Content="Wczytaj przekrój" Click="OnLoadSectionClick" />
+        <Menu Grid.ColumnSpan="2" FontSize="16" Padding="5, 0">
+            <MenuItem Header="Plik">
+                <MenuItem Header="Wczytaj profil z pliku" Click="OnLoadFileClick" x:Name="LoadProfButt"/>
+                <MenuItem Header="Utwórz profil ręcznie" x:Name="ManProfButt"/>
+            </MenuItem>
+            <MenuItem Header="Edycja" >
+                <MenuItem Header="Edytuj plik kml" x:Name="EditButt" IsEnabled="False"/>
+            </MenuItem>
+            <MenuItem Header="Analiza" x:Name="Analize" IsEnabled="False" Click="OnAnalizeClick">
+            </MenuItem>
+            <MenuItem Header="Ustawienia" x:Name="SettingsButt" Click="OnSettingsButtonClick">
+            </MenuItem>
+            <MenuItem Header="O programie" x:Name="AboutButt"/>
+        </Menu>
+        <StackPanel Grid.Row="1" Grid.RowSpan="2"  Margin="10,10,10,40" Background="LightBlue">
+            <TextBlock Text="Profile" Margin="10" Height="40" TextAlignment="Center" FontSize="30" FontWeight="Bold" />
+            <WrapPanel x:Name="ProfilesStack">
+            </WrapPanel>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Margin="10,10,10,40" Background="LightGreen">
+            <TextBlock Text="Wyniki" Margin="10" Height="40" TextAlignment="Center" FontSize="30" FontWeight="Bold" />
+            <StackPanel x:Name="OutStack">
             </StackPanel>
-        </Border>
-        <Border Grid.Column="0" Grid.Row="1" BorderThickness="2" BorderBrush="Black" Margin="10,10,10,40">
-            <StackPanel Margin="30">
-                <TextBlock Text="Przekroje" Margin="10" Height="40" TextAlignment="Center" FontSize="30" FontWeight="Bold" />
-                <StackPanel  Margin="30" x:Name="SectionStack">
-                </StackPanel>
-            </StackPanel>
-        </Border>
-        <Border Grid.Column="1" Grid.Row="1" BorderThickness="2" BorderBrush="Black" Margin="10,10,10,40">
-            <StackPanel Margin="30" x:Name="ProfilesStack">
-                <TextBlock Text="Profile" Margin="10" Height="40" TextAlignment="Center" FontSize="30" FontWeight="Bold" />
-            </StackPanel>
-        </Border>
-        <Border Grid.Column="1" Grid.Row="0" BorderThickness="2" BorderBrush="Black" Margin="10,10,10,40">
-            <ScrollViewer Grid.Column="1" Margin="10,30,10,40">
-                <StackPanel>
-                    <TextBlock Text="Pliki KML" Margin="10" Height="40" TextAlignment="Center" FontSize="30" FontWeight="Bold" />
-                    <StackPanel x:Name="Stack">
-                    </StackPanel>
-                </StackPanel>
-            </ScrollViewer>
-        </Border>
-        <StackPanel Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="30" Margin="5" Orientation="Horizontal">
-            <Button x:Name="MakeProfileButton" Content="Connect to section" Margin="10,0" Width="120" IsEnabled="False" Click="OnMakeProfileButtonClick"/>
-            <Button x:Name="LoadButton" Content="Load files" Margin="10,0" Width="80" Click="OnLoadAllFilesClick" />
-            <Button x:Name="SaveButton" Content="Save changes" Margin="10,0" Width="80" Click="OnSaveButtonClick" />
-            <!-- <Button x:Name="ShowButton" Content="Show file" Margin="10,0" Width="80" IsEnabled="False" Click="OnShowButtonClick" /> -->
-            <Button x:Name="ChangeName" Content="Change name" Margin="10,0" Width="80" IsEnabled="False" Click="OnNewNameButtonClick" />
-            <Button x:Name="EditButton" Content="Edit file" Margin="10,0" Width="80" IsEnabled="False" Click="OnEditButtonClick" />
-            <Button x:Name="DeleteButton" Content="Delete file" Margin="10,0" Width="80" IsEnabled="False" Click="OnDeleteButtonClick" />
-            <Button x:Name="ClearButton" Content="Clear files" Click="OnClearButtonClick" Margin="10,0" Width="80" />
         </StackPanel>
     </Grid>
 </Window>
