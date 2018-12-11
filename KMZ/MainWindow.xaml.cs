@@ -30,6 +30,7 @@ namespace KMZ
             SectionCollection = new List<Section>();
             ProfileCollection = new List<Profile>();
             LoadSettings();
+            
         }
 
         public List<KmlFile> KMLCollection { get; }
@@ -95,28 +96,8 @@ namespace KMZ
         
         private void EditFile()
         {
-            KmlFile outputFile;
-            if (Setts.SpareCopy == Setting.Yes)
-            {
-                outputFile = KmlFile.Create(ChosenFile.Root.Clone(), true);
-                ((Kml)outputFile.Root).Feature.Name = ((Kml)outputFile.Root).Feature.Name.Replace(".kml", "(Copy).kml");
-                AddToList(outputFile);
-            }
-            else if (Setts.SpareCopy == Setting.No)
-            {
-                //edit existing file without spare copy
-            }
-            else
-            {
-                if (MessageBox.Show("Czy chcesz stworzyć kopię zapasową?", "Question", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                {
-                    outputFile = KmlFile.Create(ChosenFile.Root.Clone(), true);
-                    ((Kml)outputFile.Root).Feature.Name = ((Kml)outputFile.Root).Feature.Name.Replace(".kml", "(Copy).kml");
-                    AddToList(outputFile);
-                }
-            }
             EditWindow editWindow = new EditWindow();
-            Kml kml = ChosenFile.Root as Kml;
+            Kml kml = current.File.ProfKmlFile.Root as Kml;
             List<Placemark> placemarks = new List<Placemark>();
             ExtractPlacemarks(kml.Feature, placemarks);
             foreach (var place in placemarks)
@@ -134,7 +115,7 @@ namespace KMZ
                 }
             }
 
-            editWindow.Show();
+            editWindow.ShowDialog();
         }
 
         private void OpenSection(Section section)
@@ -209,32 +190,40 @@ namespace KMZ
 
         private KmlFile LoadKml()
         {
-            Stream str = null;
-            OpenFileDialog LoadWindow = new OpenFileDialog()
-            {
-                InitialDirectory = "c:\\Pulpit",
-                Filter = "All files (*.*)|*.*|KML (*.kml)|*.kml",
-                FilterIndex = 2,
-                RestoreDirectory = true
-            };
-
             try
             {
-                LoadWindow.ShowDialog();
-                str = LoadWindow.OpenFile();
-                if (str != null)
+                Stream str = null;
+                OpenFileDialog LoadWindow = new OpenFileDialog()
                 {
-                    KmlFile file = KmlFile.Load(str);
-                    AddToList(file);
-                    str.Dispose();
-                    return file;
+                    InitialDirectory = "c:\\Pulpit",
+                    Filter = "All files (*.*)|*.*|KML (*.kml)|*.kml",
+                    FilterIndex = 2,
+                    RestoreDirectory = true
+                };
+
+                try
+                {
+                    LoadWindow.ShowDialog();
+                    str = LoadWindow.OpenFile();
+                    if (str != null)
+                    {
+                        KmlFile file = KmlFile.Load(str);
+                        AddToList(file);
+                        str.Dispose();
+                        return file;
+                    }
                 }
+                catch
+                {
+                    return null;
+                }
+                return null;
             }
             catch
             {
+                MessageBox.Show("Kml not loaded");
                 return null;
             }
-            return null;
         }
 
         private Section LoadSection()
@@ -271,24 +260,35 @@ namespace KMZ
             return null;
         }
 
-        private void CreateKml()
+        private KmlFile CreateKml()
         {
-            List<Coord.Vector> coorList = new List<Coord.Vector>();
-            NewFileWindow newFileWindow = new NewFileWindow(this);
+            NewFileWindow newFileWindow = new NewFileWindow();
             newFileWindow.ShowDialog();
+            return newFileWindow.OutFile;
         }
 
         private void OnManualClick(object sender, RoutedEventArgs e)
         {
-            CreateKml();
+            KmlFile kml = CreateKml();
+            Section sec = LoadSection();
+            Profile profile = new Profile(sec, kml);
+            AddToList(profile);
+
         }
 
         private void OnLoadFileClick(object sender, RoutedEventArgs e)
         {
-            KmlFile kml = LoadKml();
-            Section sec = LoadSection();
-            Profile profile = new Profile(sec, kml);
-            AddToList(profile);
+            try
+            {
+                KmlFile kml = LoadKml();
+                Section sec = LoadSection();
+                Profile profile = new Profile(sec, kml);
+                AddToList(profile);
+            }
+            catch
+            {
+                MessageBox.Show("Unable to create profile");
+            }
         }
         
         private void OnSettingsButtonClick(object sender, RoutedEventArgs e)
@@ -366,10 +366,6 @@ namespace KMZ
                     vectors.Add(startCoord);
                     depths.Add((byte)(sectionReadWindow.ZeroPoint.Y / maxDepth * 255));
                 }
-                //else if (i == pointsAmount - 1)
-                //{
-                //    dist = (sectionReadWindow.LastPoint.X - secPoints[i].X) * scale;
-                //}
                 else
                 {
                     dist = (secPoints[i].X - secPoints[i - 1].X) * scale;
@@ -415,7 +411,14 @@ namespace KMZ
 
         private void OnAnalizeClick(object sender, RoutedEventArgs e)
         {
-            DoAnalize(current);
+            try
+            {
+                DoAnalize(current);
+            }
+            catch
+            {
+                MessageBox.Show("Nie podano żadnego punktu");
+            }
         }
 
         private void OnProfileButtonClick(object sender, RoutedEventArgs e)
@@ -546,6 +549,11 @@ namespace KMZ
             AddToList(profile);
         }
 
+        private void OnCloseClick(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
         public static void ExtractPlacemarks(Feature feat, List<Placemark> placemarks)
         {
             Placemark placemark = feat as Placemark;
@@ -587,5 +595,6 @@ namespace KMZ
             container.AddFeature(placemark);
             container.AddStyle(style);
         }
+
     }
 }

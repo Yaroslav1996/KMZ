@@ -22,22 +22,22 @@ namespace KMZ.Pages
     {
         public SettingsWindow(MainWindow wind)
         {
-            InitializeComponent();
-            window = wind;
-            #region SpareCopy Init
-            if (window.Setts.SpareCopy == Setting.Yes)
-            {
-                Copy_Yes.IsChecked = true;
-            }
-            else if(window.Setts.SpareCopy == Setting.No)
-            {
-                Copy_No.IsChecked = true;
-            }
-            else
-            {
-                Copy_Maybe.IsChecked = true;
-            }
-            #endregion
+            //InitializeComponent();
+            //window = wind;
+            //#region SpareCopy Init
+            //if (window.Setts.SpareCopy == Setting.Yes)
+            //{
+            //    Copy_Yes.IsChecked = true;
+            //}
+            //else if(window.Setts.SpareCopy == Setting.No)
+            //{
+            //    Copy_No.IsChecked = true;
+            //}
+            //else
+            //{
+            //    Copy_Maybe.IsChecked = true;
+            //}
+            //#endregion
         }
 
         MainWindow window;

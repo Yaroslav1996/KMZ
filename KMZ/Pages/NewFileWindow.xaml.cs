@@ -23,15 +23,14 @@ namespace KMZ.Pages
     /// </summary>
     public partial class NewFileWindow : Window
     {
-        public NewFileWindow(MainWindow mainWindow)
+        public NewFileWindow()
         {
             InitializeComponent();
             CurrentPointNumber = 0;
             NewFileName.Focus();
             NewFileName.SelectAll();
-            main = mainWindow;
             CoordsList = new List<SharpKml.Base.Vector>();
-            Fajel = new Kml();
+            NewKmlFile = new Kml();
         }
 
         private void OnNewPointButton_Click(object sender, RoutedEventArgs e)
@@ -44,9 +43,9 @@ namespace KMZ.Pages
         }
 
         public int CurrentPointNumber { get; set; }
-        public MainWindow main { get; set; }
         public List<SharpKml.Base.Vector> CoordsList { get; set; }
-        public Kml Fajel { get; set; }
+        public Kml NewKmlFile { get; set; }
+        public KmlFile OutFile;
 
         private void CloseIt()
         {
@@ -55,10 +54,11 @@ namespace KMZ.Pages
             Placemark placemark = new Placemark();
             placemark.Name = this.NewFileName.Text + ".kml";
             placemark.Geometry = line;
-            Fajel.Feature = placemark;
-           
-            main.AddToList(KmlFile.Create(Fajel, true));
-            
+            NewKmlFile.Feature = placemark;
+
+            OutFile = KmlFile.Create(NewKmlFile, true);
+
+
             Close();
         }
 

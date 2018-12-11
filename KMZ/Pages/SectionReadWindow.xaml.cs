@@ -1,7 +1,13 @@
 ﻿using KMZ.Classes;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
+using Point = System.Windows.Point;
+using Image = System.Windows.Controls.Image;
+using System.Windows.Controls;
 
 namespace KMZ.Pages
 {
@@ -22,14 +28,19 @@ namespace KMZ.Pages
         {
             InitializeComponent();
             Points = new List<Point>();
+            Markers = new List<Point>();
             SectionName.Text = section.Name;
             SectionImage.Source = BitmapConversion.ToWpfBitmap(section.Image);
             IsOnlyShowing = showing;
             if (showing)
                 CommandBlock.Visibility = Visibility.Hidden;
+
+            Cnv.Height = SectionImage.Height;
+            Cnv.Width = SectionImage.Width;
         }
 
         public List<Point> Points { get; set; }
+        public List<Point> Markers { get; set; }
         public Point ZeroPoint { get; set; } //point on the 0,0 coords
         public Point LastPoint { get; set; }
         private PointingState _State = PointingState.ZeroPoint;
@@ -69,7 +80,20 @@ namespace KMZ.Pages
 
         private void OnSectionClick(object sender, MouseButtonEventArgs e)
         {
-            ClickProcessing(GetCoords(e));
+            Point point = GetCoords(e);
+            ClickProcessing(point);
+
+            DropImage(point, Properties.Resources.crosss);
+        }
+
+        private void DropImage(Point point, Bitmap bitmap)
+        {
+            Image img = new Image();
+            img.Source = BitmapConversion.ToWpfBitmap(BitmapConversion.ResizeImage(bitmap, 53, 30));
+
+            Cnv.Children.Add(img);
+            Canvas.SetLeft(img, point.X + 200);
+            Canvas.SetTop(img, point.Y - 30);
         }
 
         private void ClickProcessing(Point point)
@@ -96,6 +120,19 @@ namespace KMZ.Pages
                         break;
                 }
             }
+        }
+
+        private void OnRightClick(object sender, MouseButtonEventArgs e)
+        {
+            Point point = GetCoords(e);
+            RightClickProcessing(point);
+
+            DropImage(point, Properties.Resources.marker);
+        }
+
+        private void RightClickProcessing(Point point)
+        {
+            Markers.Add(point);
         }
     }
 }

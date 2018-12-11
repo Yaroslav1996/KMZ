@@ -15,10 +15,11 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
+        
         <TextBlock x:Name="SectionName" Text="Section name" Margin="10" FontSize="20" TextAlignment="Center" Grid.Column="0" FontWeight="Bold"/>
         <TextBlock x:Name="CommandBlock" Text="Zaznacz punkt w lewym-górnym rogu profilu" Margin="10" FontSize="20" TextAlignment="Center" Grid.Column="1" FontWeight="Bold"/>
-        <Border Grid.Row="1" Grid.ColumnSpan="2" BorderThickness="2" BorderBrush="Black" Margin="10">
-            <Image x:Name="SectionImage" MouseDown="OnSectionClick"/>
-        </Border>
+
+        <Image x:Name="SectionImage" Grid.Row="1" Grid.ColumnSpan="2" MouseLeftButtonDown="OnSectionClick" MouseRightButtonDown="OnRightClick" Margin="10"/>
+        <Canvas x:Name="Cnv" Grid.Row="1" Grid.ColumnSpan="2"/>
     </Grid>
 </Window>

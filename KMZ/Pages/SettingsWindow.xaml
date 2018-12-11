@@ -39,9 +39,9 @@
         </Grid.RowDefinitions>
         <Border Grid.RowSpan="4" />
 
-        <TextBlock FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" Text="Czy chcesz zachować kopię zapasową przy edycji pliku?" />
+        <!--<TextBlock FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" Text="Czy chcesz zachować kopię zapasową przy edycji pliku?" />
         <RadioButton Grid.Row="1" GroupName="Copy" Name="Copy_Yes" Content="Tak" Checked="OnCopy_Yes_Checked" />
         <RadioButton Grid.Row="2" GroupName="Copy" Name="Copy_No" Content="Nie" Checked="OnCopy_No_Checked" />
-        <RadioButton Grid.Row="3" GroupName="Copy" Name="Copy_Maybe" Content="Zawsze pytaj" Checked="OnCopy_Maybe_Checked" />
+        <RadioButton Grid.Row="3" GroupName="Copy" Name="Copy_Maybe" Content="Zawsze pytaj" Checked="OnCopy_Maybe_Checked" />-->
     </Grid>
 </Window>

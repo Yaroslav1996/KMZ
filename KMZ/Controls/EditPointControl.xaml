@@ -28,15 +28,15 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <TextBlock x:Name="Point" Grid.Column="0" Text="Point"/>
-        <TextBlock Grid.Column="1" Text="Current" />
-        <TextBlock Grid.Column="2" Text="New" />
-        <TextBlock Grid.Column="0" Grid.Row="1" Text="Latitude"/>
+        <TextBlock x:Name="Point" Grid.Column="0" Text="Punkt"/>
+        <TextBlock Grid.Column="1" Text="Obecna wartość" />
+        <TextBlock Grid.Column="2" Text="Nowa wartość" />
+        <TextBlock Grid.Column="0" Grid.Row="1" Text="Szerokość"/>
         <TextBlock x:Name="CurrLat" Grid.Column="1" Grid.Row="1" Text="50.00"/>
         <TextBox x:Name="NewLat" Grid.Column="2" Grid.Row="1"/>
-        <TextBlock Grid.Column="0" Grid.Row="2" Text="Longitude"/>
+        <TextBlock Grid.Column="0" Grid.Row="2" Text="Długość"/>
         <TextBlock x:Name="CurrLong" Grid.Column="1" Grid.Row="2" Text="50.00"/>
         <TextBox x:Name="NewLong" Grid.Column="2" Grid.Row="2"/>
-        <Button x:Name="ConfirmButton" Grid.Row="3" Grid.ColumnSpan="3" Content="Confirm" FontSize="30" Click="OnConfirmButton_Click"/>
+        <Button x:Name="ConfirmButton" Grid.Row="3" Grid.ColumnSpan="3" Content="Potwierdź" FontSize="30" Click="OnConfirmButton_Click"/>
     </Grid>
 </UserControl>

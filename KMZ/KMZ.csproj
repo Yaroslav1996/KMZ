@@ -244,10 +244,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="Data\file.json" />
     <None Include="Data\File.kml">
       <SubType>Designer</SubType>
     </None>
@@ -261,7 +260,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Cross.bmp" />
     <Resource Include="Data\img\settings.png" />
+    <Resource Include="Data\img\crosss.png" />
+    <Resource Include="Data\img\marker.png" />
     <Content Include="Pages\JS\togeojson.js" />
     <Content Include="Pages\MapPage.html" />
     <Content Include="Pages\JS\MapScript.js" />
