@@ -1,13 +1,12 @@
 ﻿using KMZ.Classes;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Windows;
-using System.Windows.Input;
-using Point = System.Windows.Point;
-using Image = System.Windows.Controls.Image;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Shapes;
+using Image = System.Windows.Controls.Image;
+using Point = System.Windows.Point;
 
 namespace KMZ.Pages
 {
@@ -43,7 +42,10 @@ namespace KMZ.Pages
         public List<Point> Markers { get; set; }
         public Point ZeroPoint { get; set; } //point on the 0,0 coords
         public Point LastPoint { get; set; }
+
+        private bool canDraw = false;
         private PointingState _State = PointingState.ZeroPoint;
+
         public PointingState State
         {
             get => _State;
@@ -71,6 +73,7 @@ namespace KMZ.Pages
                 }
             }
         }
+
         public bool IsOnlyShowing { get; set; }
 
         private Point GetCoords(MouseButtonEventArgs e)
@@ -83,17 +86,57 @@ namespace KMZ.Pages
             Point point = GetCoords(e);
             ClickProcessing(point);
 
-            DropImage(point, Properties.Resources.crosss);
+            if (canDraw)
+                DrawCross(point);
+        }
+
+        private void DrawCross(Point center)
+        {
+            int length = 20;
+            int move = 165;
+
+            Point point = new Point(center.X + ZeroPoint.X, center.Y - ZeroPoint.Y);
+
+            Line verticalLine = new Line()
+            {
+                Margin = new Thickness(0),
+                Visibility = Visibility.Visible,
+                StrokeThickness = 4,
+                Stroke = System.Windows.Media.Brushes.Black,
+                X1 = center.X + move,
+                X2 = center.X + move,
+                Y1 = center.Y - length,
+                Y2 = center.Y + length 
+            };
+            Line horizontalLine = new Line()
+            {
+                Margin = new Thickness(0),
+                Visibility = Visibility.Visible,
+                StrokeThickness = 4,
+                Stroke = System.Windows.Media.Brushes.Black,
+                Y1 = center.Y,
+                Y2 = center.Y,
+                X1 = center.X - length + move,
+                X2 = center.X + length + move
+            };
+
+            Cnv.Children.Add(verticalLine);
+            Cnv.Children.Add(horizontalLine);
         }
 
         private void DropImage(Point point, Bitmap bitmap)
         {
             Image img = new Image();
-            img.Source = BitmapConversion.ToWpfBitmap(BitmapConversion.ResizeImage(bitmap, 53, 30));
+
+            Bitmap bit = BitmapConversion.ResizeImage(bitmap, bitmap.Width / 10, bitmap.Height / 10);
+
+            bit.MakeTransparent(bit.GetPixel(0, 0));
+
+            img.Source = BitmapConversion.ToWpfBitmap(bit);
 
             Cnv.Children.Add(img);
-            Canvas.SetLeft(img, point.X + 200);
-            Canvas.SetTop(img, point.Y - 30);
+            Canvas.SetLeft(img, point.X + ZeroPoint.X + bit.Width / 2 + 68);
+            Canvas.SetTop(img, point.Y - ZeroPoint.Y - bit.Height / 2);
         }
 
         private void ClickProcessing(Point point)
@@ -114,6 +157,7 @@ namespace KMZ.Pages
 
                     case PointingState.LayerPoints:
                         Points.Add(point);
+                        canDraw = true;
                         break;
 
                     default:
@@ -124,10 +168,14 @@ namespace KMZ.Pages
 
         private void OnRightClick(object sender, MouseButtonEventArgs e)
         {
-            Point point = GetCoords(e);
-            RightClickProcessing(point);
+            if (State == PointingState.LayerPoints)
+            {
+                Point point = GetCoords(e);
+                RightClickProcessing(point);
 
-            DropImage(point, Properties.Resources.marker);
+                if (canDraw)
+                    DropImage(point, Properties.Resources.marker);
+            }
         }
 
         private void RightClickProcessing(Point point)
