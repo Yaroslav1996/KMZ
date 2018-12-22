@@ -6,15 +6,15 @@ using SharpKml.Dom;
 using SharpKml.Engine;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Xml.Serialization;
 using Coord = SharpKml.Base;
-using System.Linq;
-using System.Diagnostics;
 
 namespace KMZ
 {
@@ -30,7 +30,6 @@ namespace KMZ
             SectionCollection = new List<Section>();
             ProfileCollection = new List<Profile>();
             LoadSettings();
-            
         }
 
         public List<KmlFile> KMLCollection { get; }
@@ -93,7 +92,7 @@ namespace KMZ
             ProfilesStack.Children.Add(fileButton);
             ProfileCollection.Add(file);
         }
-        
+
         private void EditFile()
         {
             EditWindow editWindow = new EditWindow();
@@ -123,7 +122,7 @@ namespace KMZ
             SectionReadWindow sectionReadWindow = new SectionReadWindow(section, true);
             sectionReadWindow.ShowDialog();
         }
-        
+
         private void SaveKmls(params KmlFile[] kmls)
         {
             foreach (KmlFile i in kmls)
@@ -280,8 +279,6 @@ namespace KMZ
             {
                 MessageBox.Show("Błąd wczytywania plików");
             }
-
-
         }
 
         private void OnLoadFileClick(object sender, RoutedEventArgs e)
@@ -298,7 +295,7 @@ namespace KMZ
                 MessageBox.Show("Unable to create profile");
             }
         }
-        
+
         private void OnSettingsButtonClick(object sender, RoutedEventArgs e)
         {
             SettingsWindow setWind = new SettingsWindow(this);
@@ -400,6 +397,22 @@ namespace KMZ
                 AddSingleLineToContainer(vectors[i - 1], vectors[i], (byte)((depths[i] + depths[i - 1]) / 2), document, i);
             }
 
+            List<Coord.Vector> markers = new List<Coord.Vector>();
+
+            foreach (var point in sectionReadWindow.Markers)
+            {
+                double dist = point.X * scale;
+                Coord.Vector vector = CoordinatesCalculator.CalculatePoint(startCoord, dist, azimuth);
+                markers.Add(vector);
+            }
+
+            int n = 1;
+            foreach (var coord in markers)
+            {
+                AddMarkerToContainer(coord, document, n);
+                n++;
+            }
+
             Kml kml = new Kml();
             kml.Feature = document;
             KmlFile kmlFile = KmlFile.Create(kml, true);
@@ -432,7 +445,7 @@ namespace KMZ
         private void OnProfileButtonClick(object sender, RoutedEventArgs e)
         {
             FileButton<Profile> fileButton = sender as FileButton<Profile>;
-            if(current == null)
+            if (current == null)
             {
                 current = fileButton;
                 ChangeButtons(true);
@@ -444,12 +457,10 @@ namespace KMZ
                 ChangeButtons(false);
                 fileButton.Background = new System.Windows.Media.SolidColorBrush(Colors.LightGray);
             }
-
         }
 
         private void OnOutFileButtonClick(object sender, RoutedEventArgs e)
         {
-
             Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Kmz\data\kml");
         }
 
@@ -467,7 +478,7 @@ namespace KMZ
 
             if (!na.Contains(".kml"))
                 na += ".kml";
-            
+
             ((Kml)ChosenFile.Root).Feature.Name = na;
         }
 
@@ -582,6 +593,24 @@ namespace KMZ
             }
         }
 
+        public void AddMarkerToContainer(Coord.Vector place, Container container, int number)
+        {
+            SharpKml.Dom.Style style = new SharpKml.Dom.Style();
+            style.Id = "MarkerStyle" + number.ToString();
+            style.Icon = new IconStyle();
+            style.Icon.Icon = new IconStyle.IconLink(new Uri("http://maps.google.com/mapfiles/kml/paddle/red-circle.png"));
+
+            Placemark placemark = new Placemark();
+            placemark.StyleUrl = new Uri("MarkerStyle" + number.ToString(), UriKind.Relative);
+            placemark.Geometry = new SharpKml.Dom.Point()
+            {
+                Coordinate = place
+            };
+
+            container.AddFeature(placemark);
+            container.AddStyle(style);
+        }
+
         public void AddSingleLineToContainer(Coord.Vector start, Coord.Vector end, byte color, Container container, int number)
         {
             SharpKml.Dom.Style style = new SharpKml.Dom.Style();
@@ -603,6 +632,5 @@ namespace KMZ
             container.AddFeature(placemark);
             container.AddStyle(style);
         }
-
     }
 }
