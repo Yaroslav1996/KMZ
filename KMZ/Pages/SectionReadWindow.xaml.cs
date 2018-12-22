@@ -33,9 +33,6 @@ namespace KMZ.Pages
             IsOnlyShowing = showing;
             if (showing)
                 CommandBlock.Visibility = Visibility.Hidden;
-
-            Cnv.Height = SectionImage.Height;
-            Cnv.Width = SectionImage.Width;
         }
 
         public List<Point> Points { get; set; }
@@ -76,24 +73,29 @@ namespace KMZ.Pages
 
         public bool IsOnlyShowing { get; set; }
 
-        private Point GetCoords(MouseButtonEventArgs e)
+        private Point GetCoordsImage(MouseButtonEventArgs e)
         {
             return e.GetPosition(SectionImage);
         }
 
+        private Point GetCoordsCanvas(MouseButtonEventArgs e)
+        {
+            return e.GetPosition(Cnv);
+        }
+
         private void OnSectionClick(object sender, MouseButtonEventArgs e)
         {
-            Point point = GetCoords(e);
-            ClickProcessing(point);
+            Point imagePoint = GetCoordsImage(e);
+            Point cnvPoint = GetCoordsCanvas(e);
+            ClickProcessing(imagePoint);
 
             if (canDraw)
-                DrawCross(point);
+                DrawCross(cnvPoint);
         }
 
         private void DrawCross(Point center)
         {
             int length = 20;
-            int move = 165;
 
             Point point = new Point(center.X + ZeroPoint.X, center.Y - ZeroPoint.Y);
 
@@ -101,10 +103,10 @@ namespace KMZ.Pages
             {
                 Margin = new Thickness(0),
                 Visibility = Visibility.Visible,
-                StrokeThickness = 4,
+                StrokeThickness = 3,
                 Stroke = System.Windows.Media.Brushes.Black,
-                X1 = center.X + move,
-                X2 = center.X + move,
+                X1 = center.X,
+                X2 = center.X,
                 Y1 = center.Y - length,
                 Y2 = center.Y + length 
             };
@@ -112,31 +114,49 @@ namespace KMZ.Pages
             {
                 Margin = new Thickness(0),
                 Visibility = Visibility.Visible,
-                StrokeThickness = 4,
+                StrokeThickness = 3,
                 Stroke = System.Windows.Media.Brushes.Black,
                 Y1 = center.Y,
                 Y2 = center.Y,
-                X1 = center.X - length + move,
-                X2 = center.X + length + move
+                X1 = center.X - length,
+                X2 = center.X + length
             };
 
             Cnv.Children.Add(verticalLine);
             Cnv.Children.Add(horizontalLine);
         }
-
-        private void DropImage(Point point, Bitmap bitmap)
+        
+        private void DrawMarker(Point point)
         {
-            Image img = new Image();
+            int wid = 15;
+            int hei = 30;
 
-            Bitmap bit = BitmapConversion.ResizeImage(bitmap, bitmap.Width / 10, bitmap.Height / 10);
+            Line rightLine = new Line()
+            {
+                Margin = new Thickness(0),
+                Visibility = Visibility.Visible,
+                StrokeThickness = 3,
+                Stroke = System.Windows.Media.Brushes.Red,
+                X1 = point.X,
+                X2 = point.X + wid,
+                Y1 = point.Y,
+                Y2 = point.Y - hei
+            };
 
-            bit.MakeTransparent(bit.GetPixel(0, 0));
+            Line leftLine = new Line()
+            {
+                Margin = new Thickness(0),
+                Visibility = Visibility.Visible,
+                StrokeThickness = 3,
+                Stroke = System.Windows.Media.Brushes.Red,
+                X1 = point.X,
+                X2 = point.X - wid,
+                Y1 = point.Y,
+                Y2 = point.Y - hei
+            };
 
-            img.Source = BitmapConversion.ToWpfBitmap(bit);
-
-            Cnv.Children.Add(img);
-            Canvas.SetLeft(img, point.X + ZeroPoint.X + bit.Width / 2 + 68);
-            Canvas.SetTop(img, point.Y - ZeroPoint.Y - bit.Height / 2);
+            Cnv.Children.Add(rightLine);
+            Cnv.Children.Add(leftLine);
         }
 
         private void ClickProcessing(Point point)
@@ -170,11 +190,12 @@ namespace KMZ.Pages
         {
             if (State == PointingState.LayerPoints)
             {
-                Point point = GetCoords(e);
-                RightClickProcessing(point);
+                Point imagePoint = GetCoordsImage(e);
+                Point cnvPoint = GetCoordsCanvas(e);
+                RightClickProcessing(imagePoint);
 
                 if (canDraw)
-                    DropImage(point, Properties.Resources.marker);
+                    DrawMarker(cnvPoint);
             }
         }
 

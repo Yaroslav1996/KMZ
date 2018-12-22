@@ -269,10 +269,18 @@ namespace KMZ
 
         private void OnManualClick(object sender, RoutedEventArgs e)
         {
-            KmlFile kml = CreateKml();
-            Section sec = LoadSection();
-            Profile profile = new Profile(sec, kml);
-            AddToList(profile);
+            try
+            {
+                KmlFile kml = CreateKml();
+                Section sec = LoadSection();
+                Profile profile = new Profile(sec, kml);
+                AddToList(profile);
+            }
+            catch
+            {
+                MessageBox.Show("Błąd wczytywania plików");
+            }
+
 
         }
 

@@ -20,6 +20,6 @@
         <TextBlock x:Name="CommandBlock" Text="Zaznacz punkt w lewym-górnym rogu profilu" Margin="10" FontSize="20" TextAlignment="Center" Grid.Column="1" FontWeight="Bold" />
 
         <Image x:Name="SectionImage" Grid.Row="1" Grid.ColumnSpan="2" MouseLeftButtonDown="OnSectionClick" MouseRightButtonDown="OnRightClick" Margin="10" />
-        <Canvas x:Name="Cnv" Grid.Row="1" Grid.ColumnSpan="2" Margin="10" />
+        <Canvas x:Name="Cnv" Grid.Row="1" Grid.ColumnSpan="2" Margin="10"/>
     </Grid>
 </Window>

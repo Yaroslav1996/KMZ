@@ -260,10 +260,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Cross.bmp" />
-    <Resource Include="Data\img\settings.png" />
-    <Resource Include="Data\img\crosss.png" />
-    <Resource Include="Data\img\marker.png" />
     <Content Include="Pages\JS\togeojson.js" />
     <Content Include="Pages\MapPage.html" />
     <Content Include="Pages\JS\MapScript.js" />
