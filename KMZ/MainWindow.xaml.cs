@@ -29,7 +29,6 @@ namespace KMZ
             KMLCollection = new List<KmlFile>();
             SectionCollection = new List<Section>();
             ProfileCollection = new List<Profile>();
-            LoadSettings();
         }
 
         public List<KmlFile> KMLCollection { get; }
@@ -37,37 +36,6 @@ namespace KMZ
         public List<Profile> ProfileCollection { get; }
         public KmlFile ChosenFile;
         private FileButton<Profile> current;
-        public Settings Setts;
-
-        public void SaveSettings()
-        {
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(Settings));
-            StreamWriter writer = new StreamWriter("setts.xml");
-            xmlSerializer.Serialize(writer, Setts);
-            writer.Close();
-        }
-
-        public void SaveSettings(Settings file)
-        {
-            XmlSerializer writter = new XmlSerializer(typeof(Settings));
-            StreamWriter newFile = new StreamWriter("setts.xml");
-            writter.Serialize(newFile, file);
-            newFile.Close();
-        }
-
-        public void LoadSettings()
-        {
-            try
-            {
-                FileStream file = new FileStream("setts.xml", FileMode.OpenOrCreate);
-                XmlSerializer reader = new XmlSerializer(typeof(Settings));
-                Setts = reader.Deserialize(file) as Settings;
-            }
-            catch
-            {
-                MessageBox.Show("Unable to create settings file");
-            }
-        }
 
         public void AddToList(KmlFile file)
         {
@@ -294,12 +262,6 @@ namespace KMZ
             {
                 MessageBox.Show("Unable to create profile");
             }
-        }
-
-        private void OnSettingsButtonClick(object sender, RoutedEventArgs e)
-        {
-            SettingsWindow setWind = new SettingsWindow(this);
-            setWind.Show();
         }
 
         private void OnClearButtonClick(object sender, RoutedEventArgs e)

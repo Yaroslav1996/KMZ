@@ -187,10 +187,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\Map.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Pages\NewFileWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -203,10 +199,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\SettingsWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Pages\ChooseSectionWindow.xaml.cs">
@@ -214,9 +206,6 @@
     </Compile>
     <Compile Include="Pages\EditWindow.xaml.cs">
       <DependentUpon>EditWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Map.xaml.cs">
-      <DependentUpon>Map.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\NewFileWindow.xaml.cs">
       <DependentUpon>NewFileWindow.xaml</DependentUpon>
@@ -226,9 +215,6 @@
     </Compile>
     <Compile Include="Pages\SectionReadWindow.xaml.cs">
       <DependentUpon>SectionReadWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\SettingsWindow.xaml.cs">
-      <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -261,9 +247,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Pages\JS\togeojson.js" />
-    <Content Include="Pages\MapPage.html" />
     <Content Include="Pages\JS\MapScript.js" />
-    <Content Include="Pages\Style.css" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.2">

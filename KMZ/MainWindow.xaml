@@ -26,9 +26,7 @@
             <MenuItem Header="Edycja" >
                 <MenuItem Header="Edytuj plik kml" x:Name="EditButt" IsEnabled="False" Click="OnEditButtonClick"/>
             </MenuItem>
-            <MenuItem Header="Analiza" x:Name="Analize" IsEnabled="False" Click="OnAnalizeClick">
-            </MenuItem>
-            <MenuItem Header="Ustawienia" x:Name="SettingsButt" Click="OnSettingsButtonClick" IsEnabled="False">
+            <MenuItem Header="Analizuj" x:Name="Analize" IsEnabled="False" Click="OnAnalizeClick">
             </MenuItem>
             <MenuItem Header="O programie" x:Name="AboutButt"/>
         </Menu>
