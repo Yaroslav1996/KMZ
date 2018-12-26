@@ -535,6 +535,12 @@ namespace KMZ
             Application.Current.Shutdown();
         }
 
+        private void OnAboutClick(object sender, RoutedEventArgs e)
+        {
+            About about = new About();
+            about.ShowDialog();
+        }
+
         public static void ExtractPlacemarks(Feature feat, List<Placemark> placemarks)
         {
             Placemark placemark = feat as Placemark;

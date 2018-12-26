@@ -28,7 +28,7 @@
             </MenuItem>
             <MenuItem Header="Analizuj" x:Name="Analize" IsEnabled="False" Click="OnAnalizeClick">
             </MenuItem>
-            <MenuItem Header="O programie" x:Name="AboutButt"/>
+            <MenuItem Header="Pomoc" x:Name="AboutButt" Click="OnAboutClick"/>
         </Menu>
         <StackPanel Grid.Row="1" Grid.RowSpan="2"  Margin="10,10,10,40" Background="LightBlue">
             <TextBlock Text="Profile" Margin="10" Height="40" TextAlignment="Center" FontSize="30" FontWeight="Bold" />
