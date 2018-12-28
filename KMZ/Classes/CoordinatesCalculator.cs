@@ -15,7 +15,7 @@ namespace KMZ.Classes
         /// <param name="elat2"></param>
         /// <param name="elon2"></param>
         /// <returns></returns>
-        public static double CalculateDistance(double elat1, double elon1, double elat2, double elon2) //works
+        public static double CalculateDistance(double elat1, double elon1, double elat2, double elon2)
         {
             var radiansOverDegrees = (Math.PI / 180.0);
 
@@ -37,12 +37,12 @@ namespace KMZ.Classes
         }
 
         /// <summary>
-        /// 
+        /// Calculates azimuth of a line between 2 points
         /// </summary>
         /// <param name="position1"></param>
         /// <param name="position2"></param>
         /// <returns></returns>
-        public static double CalculateBearing(Coord.Vector position1, Coord.Vector position2) //works
+        public static double CalculateBearing(Coord.Vector position1, Coord.Vector position2)
         {
             var lat1 = AngleConverter.ConvertDegreesToRadians(position1.Latitude);
             var lat2 = AngleConverter.ConvertDegreesToRadians(position2.Latitude);
