@@ -288,11 +288,11 @@ namespace KMZ
             LineString line = new LineString();
             try
             {
-                line = lineList[0].Geometry as LineString;
+                line = lineList.Single().Geometry as LineString;
             }
             catch
             {
-                MessageBox.Show("Kml doesn't include a linestring");
+                MessageBox.Show("Kml nie spełnia wymogów profilu. Należy wczytać plik zawierający jedną linię.");
             }
 
             List<Coord.Vector> points = new List<Coord.Vector>();
