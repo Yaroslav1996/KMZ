@@ -53,7 +53,6 @@ namespace KMZ
             {
                 Margin = new Thickness(10, 5, 5, 10),
                 Height = 100,
-                Width = 150,
                 Content = file.Name
             };
             fileButton.Click += OnProfileButtonClick;
@@ -384,7 +383,7 @@ namespace KMZ
             FileButton<KmlFile> button = new FileButton<KmlFile>(kmlFile)
             {
                 Height = 40,
-                Margin = new Thickness(10),
+                Margin = new Thickness(10, 5, 5, 10),
                 Content = document.Name
             };
             button.Click += OnOutFileButtonClick;
